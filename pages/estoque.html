@@ -49,7 +49,16 @@
     </section>
 
     <section class="table-section">
-        <h2>Produtos em Estoque</h2>
+        <div class="section-header">
+            <h2>Produtos em Estoque</h2>
+            <button class="btn-primary" onclick="showAddMaterialModal()">+ Adicionar Material</button>
+        </div>
+        
+        <div class="search-section">
+            <input type="text" placeholder="Buscar produto..." class="search-input">
+            <button class="btn-primary">Buscar</button>
+        </div>
+        
         <table class="data-table">
             <thead>
                 <tr>
@@ -70,7 +79,11 @@
                     <td>250</td>
                     <td>Caixas</td>
                     <td><span class="status-good">Normal</span></td>
-                    <td><button class="btn-small">Editar</button></td>
+                    <td>
+                        <button class="btn-small" onclick="showMovementModal('Maçã Gala', 'entrada')">Entrada</button>
+                        <button class="btn-small" onclick="showMovementModal('Maçã Gala', 'saida')">Saída</button>
+                        <button class="btn-small" onclick="showHistory('Maçã Gala')">Histórico</button>
+                    </td>
                 </tr>
                 <tr>
                     <td>#002</td>
@@ -79,7 +92,11 @@
                     <td>15</td>
                     <td>Caixas</td>
                     <td><span class="status-low">Baixo</span></td>
-                    <td><button class="btn-small">Editar</button></td>
+                    <td>
+                        <button class="btn-small" onclick="showMovementModal('Laranja Pera', 'entrada')">Entrada</button>
+                        <button class="btn-small" onclick="showMovementModal('Laranja Pera', 'saida')">Saída</button>
+                        <button class="btn-small" onclick="showHistory('Laranja Pera')">Histórico</button>
+                    </td>
                 </tr>
                 <tr>
                     <td>#003</td>
@@ -88,13 +105,123 @@
                     <td>180</td>
                     <td>Caixas</td>
                     <td><span class="status-good">Normal</span></td>
-                    <td><button class="btn-small">Editar</button></td>
+                    <td>
+                        <button class="btn-small" onclick="showMovementModal('Uva Itália', 'entrada')">Entrada</button>
+                        <button class="btn-small" onclick="showMovementModal('Uva Itália', 'saida')">Saída</button>
+                        <button class="btn-small" onclick="showHistory('Uva Itália')">Histórico</button>
+                    </td>
                 </tr>
             </tbody>
         </table>
     </section>
+
+    <!-- Modal Adicionar Material -->
+    <div id="addMaterialModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('addMaterialModal')">&times;</span>
+            <h2>Adicionar Novo Material</h2>
+            <form class="material-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="materialNome">Nome do Material</label>
+                        <input type="text" id="materialNome" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="materialCategoria">Categoria</label>
+                        <select id="materialCategoria">
+                            <option value="frutas">Frutas</option>
+                            <option value="verduras">Verduras</option>
+                            <option value="legumes">Legumes</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="materialQuantidade">Quantidade Inicial</label>
+                        <input type="number" id="materialQuantidade" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="materialUnidade">Unidade</label>
+                        <select id="materialUnidade">
+                            <option value="caixas">Caixas</option>
+                            <option value="sacos">Sacos</option>
+                            <option value="unidades">Unidades</option>
+                            <option value="kg">Quilogramas</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Adicionar</button>
+                    <button type="button" class="btn-secondary" onclick="closeModal('addMaterialModal')">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Movimentação -->
+    <div id="movementModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('movementModal')">&times;</span>
+            <h2 id="movementTitle">Movimentação</h2>
+            <form class="movement-form">
+                <input type="hidden" id="movementProduct">
+                <input type="hidden" id="movementType">
+                <div class="form-group">
+                    <label for="movementQuantity">Quantidade</label>
+                    <input type="number" id="movementQuantity" required>
+                </div>
+                <div class="form-group">
+                    <label for="movementReason">Motivo</label>
+                    <textarea id="movementReason" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="movementDate">Data</label>
+                    <input type="date" id="movementDate" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Confirmar</button>
+                    <button type="button" class="btn-secondary" onclick="closeModal('movementModal')">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Histórico -->
+    <div id="historyModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('historyModal')">&times;</span>
+            <h2 id="historyTitle">Histórico de Movimentações</h2>
+            <div class="history-list">
+                <div class="history-item">
+                    <div class="history-info">
+                        <span class="movement-type entrada">ENTRADA</span>
+                        <span class="quantity">+50 caixas</span>
+                        <span class="date">15/02/2026</span>
+                    </div>
+                    <p class="reason">Recebimento do fornecedor Fazenda Verde</p>
+                </div>
+                <div class="history-item">
+                    <div class="history-info">
+                        <span class="movement-type saida">SAÍDA</span>
+                        <span class="quantity">-20 caixas</span>
+                        <span class="date">14/02/2026</span>
+                    </div>
+                    <p class="reason">Venda para Supermercado Central</p>
+                </div>
+                <div class="history-item">
+                    <div class="history-info">
+                        <span class="movement-type entrada">ENTRADA</span>
+                        <span class="quantity">+30 caixas</span>
+                        <span class="date">13/02/2026</span>
+                    </div>
+                    <p class="reason">Recebimento do fornecedor Citrus Ltda</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
 
 <script src="../js/script.js"></script>
+<script src="../js/estoque.js"></script>
 </body>
 </html>

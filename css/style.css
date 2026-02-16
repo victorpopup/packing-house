@@ -5,16 +5,18 @@
 }
 
 body {
-    background-color: #f0f8f0;
-    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #f0f8f0 0%, #e8f5e8 100%);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
 }
 
 header {
-    background-color: #6b46c1;
-    padding: 20px;
+    background: linear-gradient(135deg, #6b46c1 0%, #8b5cf6 100%);
+    padding: 30px 20px;
     text-align: center;
-    border-bottom: 1px solid #a8d5a8;
+    border-bottom: 3px solid #a8d5a8;
     margin: 0;
+    box-shadow: 0 2px 10px rgba(107, 70, 193, 0.2);
 }
 
 .logo {
@@ -26,36 +28,33 @@ header {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background-color: #6b46c1;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #6b46c1 0%, #8b5cf6 100%);
     color: white;
     border: none;
     border-radius: 50%;
-    width: 60px;
-    height: 60px;
     font-size: 24px;
     cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    z-index: 1000;
+    z-index: 9999;
+    box-shadow: 0 4px 15px rgba(107, 70, 193, 0.3);
     transition: all 0.3s ease;
 }
 
 .menu-btn:hover {
-    background-color: #5a3999;
-    transform: scale(1.1);
-    box-shadow: 0 6px 12px rgba(168, 213, 168, 0.3);
+    background: linear-gradient(135deg, #5a3999 0%, #7c3aed 100%);
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(107, 70, 193, 0.4);
 }
 
 .menu-nav {
     position: fixed;
     bottom: 90px;
     right: 20px;
-    background-color: white;
-    border-radius: 10px;
-    border: 2px solid #a8d5a8;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-    padding: 20px;
+    background-color: transparent;
+    padding: 0;
     display: none;
-    z-index: 999;
+    z-index: 9998;
     min-width: 200px;
 }
 
@@ -68,16 +67,40 @@ header {
 }
 
 .menu-nav li {
-    margin: 10px 0;
+    margin: 8px 0;
+    border: none;
+    border-radius: 12px;
+    padding: 15px 20px;
+    background: linear-gradient(135deg, #6b46c1 0%, #8b5cf6 100%);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(107, 70, 193, 0.2);
+}
+
+.menu-nav li:hover {
+    background: linear-gradient(135deg, #5a3999 0%, #7c3aed 100%);
+    box-shadow: 0 6px 20px rgba(107, 70, 193, 0.3);
+    transform: translateY(-1px);
+}
+
+.menu-nav li:last-child {
+    border: none;
+    padding: 15px 20px;
 }
 
 .menu-nav a {
     text-decoration: none;
-    color: #333;
-    font-weight: 500;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
     transition: color 0.3s ease;
+    display: block;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .menu-nav a:hover {
-    color: #6b46c1;
+    color: #ffffff;
 }
