@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,12 +8,9 @@
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/pages.css">
 </head>
+
 <body>
-    
-<header>
-    <img src="../assets/images/logo.png" alt="Packing House Logo" class="logo">
-    <h1>Recepção de Mercadorias</h1>
-</header>
+    <p>página ainda em esenvolvimento<p
 
 <button class="menu-btn" onclick="toggleMenu()">☰</button>
 
@@ -24,95 +22,9 @@
     </ul>
 </nav>
 
-<main class="page-content">
-    <section class="form-section">
-        <h2>Nova Entrada</h2>
-        <form class="recepcao-form">
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="fornecedor">Fornecedor</label>
-                    <input type="text" id="fornecedor" name="fornecedor" required>
-                </div>
-                <div class="form-group">
-                    <label for="data">Data</label>
-                    <input type="date" id="data" name="data" required>
-                </div>
-            </div>
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="produto">Produto</label>
-                    <input type="text" id="produto" name="produto" required>
-                </div>
-                <div class="form-group">
-                    <label for="quantidade">Quantidade</label>
-                    <input type="number" id="quantidade" name="quantidade" required>
-                </div>
-            </div>
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="categoria">Categoria</label>
-                    <select id="categoria" name="categoria">
-                        <option value="">Selecione...</option>
-                        <option value="frutas">Frutas</option>
-                        <option value="verduras">Verduras</option>
-                        <option value="legumes">Legumes</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="unidade">Unidade</label>
-                    <select id="unidade" name="unidade">
-                        <option value="">Selecione...</option>
-                        <option value="caixas">Caixas</option>
-                        <option value="sacos">Sacos</option>
-                        <option value="unidades">Unidades</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div class="form-group full-width">
-                <label for="observacoes">Observações</label>
-                <textarea id="observacoes" name="observacoes" rows="3"></textarea>
-            </div>
-            
-            <div class="form-actions">
-                <button type="submit" class="btn-primary">Registrar Entrada</button>
-                <button type="reset" class="btn-secondary">Limpar</button>
-            </div>
-        </form>
-    </section>
-
-    <section class="recent-section">
-        <h2>Entradas Recentes</h2>
-        <div class="recent-list">
-            <div class="recent-item">
-                <div class="item-info">
-                    <h4>Maçã Gala</h4>
-                    <p>Fornecedor: Fazenda Verde</p>
-                    <p>Data: 15/02/2026</p>
-                </div>
-                <div class="item-quantity">
-                    <span class="quantity">50 caixas</span>
-                    <span class="status-good">Concluído</span>
-                </div>
-            </div>
-            <div class="recent-item">
-                <div class="item-info">
-                    <h4>Laranja Pera</h4>
-                    <p>Fornecedor: Citrus Ltda</p>
-                    <p>Data: 14/02/2026</p>
-                </div>
-                <div class="item-quantity">
-                    <span class="quantity">30 caixas</span>
-                    <span class="status-good">Concluído</span>
-                </div>
-            </div>
-        </div>
-    </section>
-</main>
-
 <script src="../js/script.js"></script>
 <script src="../js/recepcao.js"></script>
+
 </body>
+
 </html>
