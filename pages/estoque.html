@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estoque - Packing House</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/pages.css">
+</head>
+<body>
+    
+<header>
+    <img src="../assets/images/logo.png" alt="Packing House Logo" class="logo">
+    <h1>Controle de Estoque</h1>
+</header>
+
+<button class="menu-btn" onclick="toggleMenu()">☰</button>
+
+<nav class="menu-nav" id="menuNav">
+    <ul>
+        <li><a href="../index.html">Resumo</a></li>
+        <li><a href="estoque.html">Estoque</a></li>
+        <li><a href="recepcao.html">Recepção</a></li>
+    </ul>
+</nav>
+
+<main class="page-content">
+    <section class="stats-container">
+        <div class="stat-card">
+            <h3>Total em Estoque</h3>
+            <p class="stat-number">1,234</p>
+            <span class="stat-label">Unidades</span>
+        </div>
+        <div class="stat-card">
+            <h3>Produtos Ativos</h3>
+            <p class="stat-number">45</p>
+            <span class="stat-label">Itens</span>
+        </div>
+        <div class="stat-card">
+            <h3>Estoque Baixo</h3>
+            <p class="stat-number">8</p>
+            <span class="stat-label">Itens</span>
+        </div>
+    </section>
+
+    <section class="search-section">
+        <input type="text" placeholder="Buscar produto..." class="search-input">
+        <button class="btn-primary">Buscar</button>
+    </section>
+
+    <section class="table-section">
+        <h2>Produtos em Estoque</h2>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Produto</th>
+                    <th>Categoria</th>
+                    <th>Quantidade</th>
+                    <th>Unidade</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>#001</td>
+                    <td>Maçã Gala</td>
+                    <td>Frutas</td>
+                    <td>250</td>
+                    <td>Caixas</td>
+                    <td><span class="status-good">Normal</span></td>
+                    <td><button class="btn-small">Editar</button></td>
+                </tr>
+                <tr>
+                    <td>#002</td>
+                    <td>Laranja Pera</td>
+                    <td>Frutas</td>
+                    <td>15</td>
+                    <td>Caixas</td>
+                    <td><span class="status-low">Baixo</span></td>
+                    <td><button class="btn-small">Editar</button></td>
+                </tr>
+                <tr>
+                    <td>#003</td>
+                    <td>Uva Itália</td>
+                    <td>Frutas</td>
+                    <td>180</td>
+                    <td>Caixas</td>
+                    <td><span class="status-good">Normal</span></td>
+                    <td><button class="btn-small">Editar</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+
+<script src="../js/script.js"></script>
+</body>
+</html>
