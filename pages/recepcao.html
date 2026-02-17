@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recepção - Packing House</title>
     <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/pages.css">
+    <link rel="stylesheet" href="../css/recepcao.css">
 </head>
-
 <body>
-    <p>página ainda em esenvolvimento<p
+    
+<header>
+    <img src="../assets/images/logo.png" alt="Packing House Logo" class="logo">
+    <h1>Recepção de Mercadorias</h1>
+</header>
 
 <button class="menu-btn" onclick="toggleMenu()">☰</button>
 
@@ -22,9 +24,121 @@
     </ul>
 </nav>
 
+<main class="page-content">
+    <section class="form-section">
+        <h2>Nova Entrada de Mercadoria</h2>
+        <form class="recepcao-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="fornecedor">Fornecedor</label>
+                    <input type="text" id="fornecedor" required>
+                </div>
+                <div class="form-group">
+                    <label for="dataEntrada">Data de Entrada</label>
+                    <input type="date" id="dataEntrada" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="notaFiscal">Nota Fiscal</label>
+                    <input type="text" id="notaFiscal" required>
+                </div>
+                <div class="form-group">
+                    <label for="tipoMercadoria">Tipo de Mercadoria</label>
+                    <select id="tipoMercadoria" required>
+                        <option value="">Selecione...</option>
+                        <option value="frutas">Frutas</option>
+                        <option value="verduras">Verduras</option>
+                        <option value="legumes">Legumes</option>
+                        <option value="outros">Outros</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group full-width">
+                <label for="observacoes">Observações</label>
+                <textarea id="observacoes" rows="4" placeholder="Informações adicionais sobre a entrada..."></textarea>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">Registrar Entrada</button>
+                <button type="button" class="btn-secondary">Limpar</button>
+            </div>
+        </form>
+    </section>
+
+    <section class="recent-entries">
+        <h2>Entradas Recentes</h2>
+        <div class="entries-list">
+            <div class="entry-item">
+                <div class="entry-header">
+                    <div class="entry-info">
+                        <h3>Maçã Gala - 50 Caixas</h3>
+                        <span class="entry-date">15/02/2026</span>
+                    </div>
+                </div>
+                <div class="entry-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Fornecedor</span>
+                        <span class="detail-value">Fazenda Verde Ltda</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Nota Fiscal</span>
+                        <span class="detail-value">NF-001234</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Tipo</span>
+                        <span class="detail-value">Frutas</span>
+                    </div>
+                </div>
+            </div>
+            <div class="entry-item">
+                <div class="entry-header">
+                    <div class="entry-info">
+                        <h3>Laranja Pera - 30 Caixas</h3>
+                        <span class="entry-date">14/02/2026</span>
+                    </div>
+                </div>
+                <div class="entry-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Fornecedor</span>
+                        <span class="detail-value">Citrus do Brasil</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Nota Fiscal</span>
+                        <span class="detail-value">NF-001235</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Tipo</span>
+                        <span class="detail-value">Frutas</span>
+                    </div>
+                </div>
+            </div>
+            <div class="entry-item">
+                <div class="entry-header">
+                    <div class="entry-info">
+                        <h3>Uva Itália - 25 Caixas</h3>
+                        <span class="entry-date">13/02/2026</span>
+                    </div>
+                </div>
+                <div class="entry-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Fornecedor</span>
+                        <span class="detail-value">Vinhedos do Sul</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Nota Fiscal</span>
+                        <span class="detail-value">NF-001236</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Tipo</span>
+                        <span class="detail-value">Frutas</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
 <script src="../js/script.js"></script>
 <script src="../js/recepcao.js"></script>
-
 </body>
-
 </html>

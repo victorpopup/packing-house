@@ -30,9 +30,10 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const nome = document.getElementById('materialNome').value;
             const quantidade = document.getElementById('materialQuantidade').value;
+            const unidade = document.getElementById('materialUnidade').value;
             
             // Add new row to table
-            addMaterialToTable(nome, quantidade);
+            addMaterialToTable(nome, quantidade, unidade);
             
             // Reset form and close modal
             materialForm.reset();
@@ -51,14 +52,15 @@ document.addEventListener('DOMContentLoaded', function() {
             const material = document.getElementById('materialSelect').value;
             const type = document.getElementById('movementType').value;
             const quantity = document.getElementById('movementQuantity').value;
+            const unit = document.getElementById('movementUnit').value;
             const date = document.getElementById('movementDate').value;
             const reason = document.getElementById('movementReason').value;
             
             // Add to history
-            addMovementToHistory(material, type, quantity, date, reason);
+            addMovementToHistory(material, type, quantity, unit, date, reason);
             
             // Update stock table
-            updateStockTable(material, type, quantity);
+            updateStockTable(material, type, quantity, unit);
             
             // Reset form
             movementForm.reset();
@@ -70,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-function addMaterialToTable(nome, quantidade) {
+function addMaterialToTable(nome, quantidade, unidade) {
     const table = document.querySelector('.data-table tbody');
     const newRow = table.insertRow();
     
@@ -81,11 +83,12 @@ function addMaterialToTable(nome, quantidade) {
     newRow.innerHTML = `
         <td data-label="Material">${nome}</td>
         <td data-label="Quantidade">${quantidade}</td>
+        <td data-label="Unidade">${unidade}</td>
         <td data-label="Status"><span class="${statusClass}">${status}</span></td>
     `;
 }
 
-function addMovementToHistory(material, type, quantity, date, reason) {
+function addMovementToHistory(material, type, quantity, unit, date, reason) {
     const historyList = document.querySelector('.history-list');
     const newItem = document.createElement('div');
     newItem.className = 'history-item';
@@ -98,10 +101,9 @@ function addMovementToHistory(material, type, quantity, date, reason) {
         <div class="history-info">
             <span class="movement-type ${type}">${type.toUpperCase()}</span>
             <span class="material-name">${material}</span>
-            <span class="quantity">${type === 'entrada' ? '+' : '-'}${quantity}</span>
+            <span class="quantity">${type === 'entrada' ? '+' : '-'}${quantity} ${unit}</span>
             <span class="date">${formattedDate}</span>
         </div>
-        <p class="reason">${reason || 'Sem motivo especificado'}</p>
     `;
     
     // Add to beginning of history
@@ -117,7 +119,7 @@ function addMovementToHistory(material, type, quantity, date, reason) {
     }, 100);
 }
 
-function updateStockTable(material, type, quantity) {
+function updateStockTable(material, type, quantity, unit) {
     const table = document.querySelector('.data-table tbody');
     const rows = table.getElementsByTagName('tr');
     
