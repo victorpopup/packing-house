@@ -43,180 +43,158 @@
         </div>
     </section>
 
-    <section class="search-section">
-        <input type="text" placeholder="Buscar produto..." class="search-input">
-        <button class="btn-primary">Buscar</button>
-    </section>
-
     <section class="table-section">
         <div class="section-header">
-            <h2>Produtos em Estoque</h2>
+            <h2>Estoque de Materiais</h2>
             <button class="btn-primary" onclick="showAddMaterialModal()">+ Adicionar Material</button>
         </div>
         
         <div class="search-section">
-            <input type="text" placeholder="Buscar produto..." class="search-input">
+            <input type="text" placeholder="Buscar material..." class="search-input">
             <button class="btn-primary">Buscar</button>
         </div>
         
         <table class="data-table">
             <thead>
                 <tr>
-                    <th>Código</th>
-                    <th>Produto</th>
-                    <th>Categoria</th>
+                    <th>Material</th>
                     <th>Quantidade</th>
-                    <th>Unidade</th>
                     <th>Status</th>
-                    <th>Ações</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>#001</td>
-                    <td>Maçã Gala</td>
-                    <td>Frutas</td>
-                    <td>250</td>
-                    <td>Caixas</td>
-                    <td><span class="status-good">Normal</span></td>
-                    <td>
-                        <button class="btn-small" onclick="showMovementModal('Maçã Gala', 'entrada')">Entrada</button>
-                        <button class="btn-small" onclick="showMovementModal('Maçã Gala', 'saida')">Saída</button>
-                        <button class="btn-small" onclick="showHistory('Maçã Gala')">Histórico</button>
-                    </td>
+                    <td data-label="Material">Maçã Gala</td>
+                    <td data-label="Quantidade">250</td>
+                    <td data-label="Status"><span class="status-good">Normal</span></td>
                 </tr>
                 <tr>
-                    <td>#002</td>
-                    <td>Laranja Pera</td>
-                    <td>Frutas</td>
-                    <td>15</td>
-                    <td>Caixas</td>
-                    <td><span class="status-low">Baixo</span></td>
-                    <td>
-                        <button class="btn-small" onclick="showMovementModal('Laranja Pera', 'entrada')">Entrada</button>
-                        <button class="btn-small" onclick="showMovementModal('Laranja Pera', 'saida')">Saída</button>
-                        <button class="btn-small" onclick="showHistory('Laranja Pera')">Histórico</button>
-                    </td>
+                    <td data-label="Material">Laranja Pera</td>
+                    <td data-label="Quantidade">15</td>
+                    <td data-label="Status"><span class="status-low">Baixo</span></td>
                 </tr>
                 <tr>
-                    <td>#003</td>
-                    <td>Uva Itália</td>
-                    <td>Frutas</td>
-                    <td>180</td>
-                    <td>Caixas</td>
-                    <td><span class="status-good">Normal</span></td>
-                    <td>
-                        <button class="btn-small" onclick="showMovementModal('Uva Itália', 'entrada')">Entrada</button>
-                        <button class="btn-small" onclick="showMovementModal('Uva Itália', 'saida')">Saída</button>
-                        <button class="btn-small" onclick="showHistory('Uva Itália')">Histórico</button>
-                    </td>
+                    <td data-label="Material">Uva Itália</td>
+                    <td data-label="Quantidade">180</td>
+                    <td data-label="Status"><span class="status-good">Normal</span></td>
                 </tr>
             </tbody>
         </table>
+    </section>
+
+    <!-- Seção de Movimentações -->
+    <section class="table-section">
+        <div class="section-header">
+            <h2>Nova Movimentação</h2>
+        </div>
+        
+        <form class="movement-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="materialSelect">Material</label>
+                    <select id="materialSelect" required>
+                        <option value="">Selecione um material</option>
+                        <option value="Maçã Gala">Maçã Gala</option>
+                        <option value="Laranja Pera">Laranja Pera</option>
+                        <option value="Uva Itália">Uva Itália</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="movementType">Tipo</label>
+                    <select id="movementType" required>
+                        <option value="">Selecione o tipo</option>
+                        <option value="entrada">Entrada</option>
+                        <option value="saida">Saída</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="movementQuantity">Quantidade</label>
+                    <input type="number" id="movementQuantity" required>
+                </div>
+                <div class="form-group">
+                    <label for="movementDate">Data</label>
+                    <input type="date" id="movementDate" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="movementReason">Motivo</label>
+                <textarea id="movementReason" rows="3" placeholder="Descreva o motivo da movimentação..."></textarea>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">Registrar Movimentação</button>
+            </div>
+        </form>
+    </section>
+
+    <!-- Seção de Histórico -->
+    <section class="table-section">
+        <div class="section-header">
+            <h2>Histórico de Movimentações</h2>
+            <button class="btn-primary" onclick="exportHistory()">Exportar</button>
+        </div>
+        
+        <div class="search-section">
+            <input type="text" placeholder="Buscar movimentação..." class="search-input">
+            <select class="search-input">
+                <option value="">Todos os tipos</option>
+                <option value="entrada">Entrada</option>
+                <option value="saida">Saída</option>
+            </select>
+            <button class="btn-primary">Filtrar</button>
+        </div>
+        
+        <div class="history-list">
+            <div class="history-item">
+                <div class="history-info">
+                    <span class="movement-type entrada">ENTRADA</span>
+                    <span class="material-name">Maçã Gala</span>
+                    <span class="quantity">+50</span>
+                    <span class="date">15/02/2026 14:30</span>
+                </div>
+                <p class="reason">Recebimento do fornecedor Fazenda Verde</p>
+            </div>
+            <div class="history-item">
+                <div class="history-info">
+                    <span class="movement-type saida">SAÍDA</span>
+                    <span class="material-name">Laranja Pera</span>
+                    <span class="quantity">-20</span>
+                    <span class="date">15/02/2026 10:15</span>
+                </div>
+                <p class="reason">Venda para Supermercado Central</p>
+            </div>
+            <div class="history-item">
+                <div class="history-info">
+                    <span class="movement-type entrada">ENTRADA</span>
+                    <span class="material-name">Uva Itália</span>
+                    <span class="quantity">+30</span>
+                    <span class="date">14/02/2026 16:45</span>
+                </div>
+                <p class="reason">Recebimento do fornecedor Citrus Ltda</p>
+            </div>
+        </div>
     </section>
 
     <!-- Modal Adicionar Material -->
     <div id="addMaterialModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('addMaterialModal')">&times;</span>
-            <h2>Adicionar Novo Material</h2>
+            <h2>Adicionar Material</h2>
             <form class="material-form">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="materialNome">Nome do Material</label>
-                        <input type="text" id="materialNome" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="materialCategoria">Categoria</label>
-                        <select id="materialCategoria">
-                            <option value="frutas">Frutas</option>
-                            <option value="verduras">Verduras</option>
-                            <option value="legumes">Legumes</option>
-                        </select>
-                    </div>
+                <div class="form-group">
+                    <label for="materialNome">Nome do Material</label>
+                    <input type="text" id="materialNome" required>
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="materialQuantidade">Quantidade Inicial</label>
-                        <input type="number" id="materialQuantidade" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="materialUnidade">Unidade</label>
-                        <select id="materialUnidade">
-                            <option value="caixas">Caixas</option>
-                            <option value="sacos">Sacos</option>
-                            <option value="unidades">Unidades</option>
-                            <option value="kg">Quilogramas</option>
-                        </select>
-                    </div>
+                <div class="form-group">
+                    <label for="materialQuantidade">Quantidade</label>
+                    <input type="number" id="materialQuantidade" required>
                 </div>
                 <div class="form-actions">
                     <button type="submit" class="btn-primary">Adicionar</button>
                     <button type="button" class="btn-secondary" onclick="closeModal('addMaterialModal')">Cancelar</button>
                 </div>
             </form>
-        </div>
-    </div>
-
-    <!-- Modal Movimentação -->
-    <div id="movementModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('movementModal')">&times;</span>
-            <h2 id="movementTitle">Movimentação</h2>
-            <form class="movement-form">
-                <input type="hidden" id="movementProduct">
-                <input type="hidden" id="movementType">
-                <div class="form-group">
-                    <label for="movementQuantity">Quantidade</label>
-                    <input type="number" id="movementQuantity" required>
-                </div>
-                <div class="form-group">
-                    <label for="movementReason">Motivo</label>
-                    <textarea id="movementReason" rows="3"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="movementDate">Data</label>
-                    <input type="date" id="movementDate" required>
-                </div>
-                <div class="form-actions">
-                    <button type="submit" class="btn-primary">Confirmar</button>
-                    <button type="button" class="btn-secondary" onclick="closeModal('movementModal')">Cancelar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal Histórico -->
-    <div id="historyModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('historyModal')">&times;</span>
-            <h2 id="historyTitle">Histórico de Movimentações</h2>
-            <div class="history-list">
-                <div class="history-item">
-                    <div class="history-info">
-                        <span class="movement-type entrada">ENTRADA</span>
-                        <span class="quantity">+50 caixas</span>
-                        <span class="date">15/02/2026</span>
-                    </div>
-                    <p class="reason">Recebimento do fornecedor Fazenda Verde</p>
-                </div>
-                <div class="history-item">
-                    <div class="history-info">
-                        <span class="movement-type saida">SAÍDA</span>
-                        <span class="quantity">-20 caixas</span>
-                        <span class="date">14/02/2026</span>
-                    </div>
-                    <p class="reason">Venda para Supermercado Central</p>
-                </div>
-                <div class="history-item">
-                    <div class="history-info">
-                        <span class="movement-type entrada">ENTRADA</span>
-                        <span class="quantity">+30 caixas</span>
-                        <span class="date">13/02/2026</span>
-                    </div>
-                    <p class="reason">Recebimento do fornecedor Citrus Ltda</p>
-                </div>
-            </div>
         </div>
     </div>
 </main>

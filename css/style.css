@@ -5,17 +5,17 @@
 }
 
 body {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
     font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
     min-height: 100vh;
+    color: #e8e8e8;
 }
 
 header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     padding: 40px 20px;
     text-align: center;
-    border-bottom: 4px solid #a8d5a8;
     margin: 0;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(10px);
