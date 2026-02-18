@@ -85,6 +85,7 @@ function addMaterialToTable(nome, quantidade, unidade) {
         <td data-label="Quantidade">${quantidade}</td>
         <td data-label="Unidade">${unidade}</td>
         <td data-label="Status"><span class="${statusClass}">${status}</span></td>
+        <td data-label="Ações"><button class="btn-delete" onclick="deleteMaterial(this)">Excluir</button></td>
     `;
 }
 
@@ -134,7 +135,7 @@ function updateStockTable(material, type, quantity, unit) {
             row.cells[1].textContent = newQuantity;
             
             // Update status
-            const statusCell = row.cells[2].querySelector('span');
+            const statusCell = row.cells[3].querySelector('span');
             if (newQuantity < 20) {
                 statusCell.textContent = 'Baixo';
                 statusCell.className = 'status-low';
@@ -177,6 +178,24 @@ function showSuccessMessage(message) {
             document.body.removeChild(successDiv);
         }, 300);
     }, 3000);
+}
+
+function deleteMaterial(button) {
+    if (confirm('Tem certeza que deseja excluir este material?')) {
+        const row = button.closest('tr');
+        const materialName = row.cells[0].textContent;
+        
+        // Add fade out animation
+        row.style.transition = 'all 0.3s ease';
+        row.style.opacity = '0';
+        row.style.transform = 'translateX(-20px)';
+        
+        setTimeout(() => {
+            row.remove();
+            updateStats();
+            showSuccessMessage(`Material "${materialName}" excluído com sucesso!`);
+        }, 300);
+    }
 }
 
 function updateStats() {
