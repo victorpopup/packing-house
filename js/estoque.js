@@ -22,6 +22,21 @@ document.addEventListener('DOMContentLoaded', function() {
         dateInput.value = new Date().toISOString().split('T')[0];
     }
     
+    // Add auto-filter listeners
+    const materialFilter = document.getElementById('filterMaterial');
+    const dateFilter = document.getElementById('filterDate');
+    const typeFilter = document.getElementById('filterType');
+    
+    if (materialFilter) {
+        materialFilter.addEventListener('input', filterHistory);
+    }
+    if (dateFilter) {
+        dateFilter.addEventListener('change', filterHistory);
+    }
+    if (typeFilter) {
+        typeFilter.addEventListener('change', filterHistory);
+    }
+    
     // Material form
     const materialForm = document.querySelector('.material-form');
     if (materialForm) {
@@ -195,6 +210,75 @@ function deleteMaterial(button) {
             updateStats();
             showSuccessMessage(`Material "${materialName}" excluído com sucesso!`);
         }, 300);
+    }
+}
+
+function filterHistory() {
+    const materialFilter = document.getElementById('filterMaterial').value.toLowerCase();
+    const dateFilter = document.getElementById('filterDate').value;
+    const typeFilter = document.getElementById('filterType').value;
+    
+    const historyItems = document.querySelectorAll('.history-item');
+    let visibleCount = 0;
+    
+    historyItems.forEach(item => {
+        const materialName = item.querySelector('.material-name').textContent.toLowerCase();
+        const dateText = item.querySelector('.date').textContent;
+        const movementType = item.querySelector('.movement-type').textContent.toLowerCase();
+        
+        // Parse date from format "DD/MM/YYYY HH:mm" to compare with date filter
+        const itemDate = dateText.split(' ')[0];
+        const [day, month, year] = itemDate.split('/');
+        const formattedItemDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+        
+        let matchesMaterial = !materialFilter || materialName.includes(materialFilter);
+        let matchesDate = !dateFilter || formattedItemDate === dateFilter;
+        let matchesType = !typeFilter || movementType.includes(typeFilter);
+        
+        if (matchesMaterial && matchesDate && matchesType) {
+            item.style.display = 'block';
+            visibleCount++;
+        } else {
+            item.style.display = 'none';
+        }
+    });
+    
+    // Show message if no results
+    const historyContainer = document.querySelector('.history-ol');
+    const existingMessage = document.querySelector('.no-results-message');
+    
+    if (existingMessage) {
+        existingMessage.remove();
+    }
+    
+    if (visibleCount === 0) {
+        const noResultsMsg = document.createElement('div');
+        noResultsMsg.className = 'no-results-message';
+        noResultsMsg.style.cssText = `
+            text-align: center;
+            padding: 40px;
+            color: #a8a8a8;
+            font-style: italic;
+        `;
+        noResultsMsg.textContent = 'Nenhuma movimentação encontrada para os filtros selecionados.';
+        historyContainer.appendChild(noResultsMsg);
+    }
+}
+
+function clearFilters() {
+    document.getElementById('filterMaterial').value = '';
+    document.getElementById('filterDate').value = '';
+    document.getElementById('filterType').value = '';
+    
+    const historyItems = document.querySelectorAll('.history-item');
+    historyItems.forEach(item => {
+        item.style.display = 'block';
+    });
+    
+    // Remove no results message if exists
+    const existingMessage = document.querySelector('.no-results-message');
+    if (existingMessage) {
+        existingMessage.remove();
     }
 }
 
