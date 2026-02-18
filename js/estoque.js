@@ -207,35 +207,6 @@ function updateStats() {
     }
 }
 
-function exportHistory() {
-    // Create CSV content
-    const historyItems = document.querySelectorAll('.history-item');
-    let csvContent = 'Data,Tipo,Material,Quantidade,Motivo\n';
-    
-    historyItems.forEach(item => {
-        const type = item.querySelector('.movement-type').textContent;
-        const material = item.querySelector('.material-name').textContent;
-        const quantity = item.querySelector('.quantity').textContent;
-        const date = item.querySelector('.date').textContent;
-        const reason = item.querySelector('.reason').textContent;
-        
-        csvContent += `"${date}","${type}","${material}","${quantity}","${reason}"\n`;
-    });
-    
-    // Create download link
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    link.setAttribute('href', url);
-    link.setAttribute('download', `movimentacoes_${new Date().toISOString().split('T')[0]}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    showSuccessMessage('Histórico exportado com sucesso!');
-}
-
 // Add CSS animations
 const style = document.createElement('style');
 style.textContent = `
