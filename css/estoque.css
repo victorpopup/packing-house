@@ -155,8 +155,8 @@ header h1 {
     color: white;
     border: none;
     border-radius: 12px;
-    padding: 10px 20px;
-    font-size: 14px;
+    padding: 8px 16px;
+    font-size: 12px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -195,8 +195,6 @@ header h1 {
     margin: 2px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-}
-
 }
 
 /* Table Section */
