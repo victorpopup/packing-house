@@ -90,7 +90,7 @@ function addMaterialToTable(nome, quantidade, unidade) {
 }
 
 function addMovementToHistory(material, type, quantity, unit, date, reason) {
-    const historyList = document.querySelector('.history-list');
+    const historyContainer = document.querySelector('.history-ol');
     const newItem = document.createElement('div');
     newItem.className = 'history-item';
     
@@ -108,7 +108,7 @@ function addMovementToHistory(material, type, quantity, unit, date, reason) {
     `;
     
     // Add to beginning of history
-    historyList.insertBefore(newItem, historyList.firstChild);
+    historyContainer.insertBefore(newItem, historyContainer.firstChild);
     
     // Add animation
     newItem.style.opacity = '0';
