@@ -103,11 +103,35 @@
         bottom: 80px !important;
         right: 20px !important;
         min-width: 180px !important;
+        max-width: 200px !important;
     }
     
     .menu-item {
         padding: 12px 15px !important;
         font-size: 14px !important;
         margin: 6px 0 !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .floating-menu-btn {
+        width: 45px !important;
+        height: 45px !important;
+        font-size: 18px !important;
+        bottom: 15px !important;
+        right: 15px !important;
+    }
+    
+    .floating-menu {
+        bottom: 70px !important;
+        right: 15px !important;
+        min-width: 160px !important;
+        max-width: 180px !important;
+    }
+    
+    .menu-item {
+        padding: 10px 12px !important;
+        font-size: 13px !important;
+        margin: 5px 0 !important;
     }
 }

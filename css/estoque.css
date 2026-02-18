@@ -538,6 +538,21 @@ header h1 {
         padding: 0 10px;
     }
     
+    header {
+        padding: 15px 10px;
+    }
+    
+    header h1 {
+        font-size: 20px;
+        margin-top: -30px;
+        padding: 6px 15px;
+    }
+    
+    .page-title {
+        font-size: 24px;
+        margin: 20px 0;
+    }
+    
     .stats-container {
         grid-template-columns: 1fr;
         gap: 15px;
@@ -545,103 +560,140 @@ header h1 {
     }
     
     .stat-card {
-        padding: 20px 15px;
+        padding: 20px;
+        text-align: center;
+    }
+    
+    .stat-card h3 {
+        font-size: 16px;
     }
     
     .stat-number {
         font-size: 28px;
     }
     
-    .section-header {
-        flex-direction: column;
-        gap: 12px;
-        text-align: center;
-    }
-    
-    .search-section {
+    .action-buttons {
         flex-direction: column;
         gap: 10px;
-        padding: 15px;
     }
     
-    .search-input {
-        padding: 12px 15px;
-        font-size: 16px;
+    .btn {
+        width: 100%;
+        font-size: 14px;
+        padding: 12px;
     }
     
     .table-section {
         padding: 15px;
         border-radius: 15px;
+        overflow-x: auto;
     }
     
+    /* Tabela responsiva - Transforma em cards */
     .data-table {
         font-size: 14px;
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
     }
     
-    .data-table th,
+    .data-table thead {
+        display: none;
+    }
+    
+    .data-table tbody,
+    .data-table tr,
     .data-table td {
-        padding: 12px 8px;
+        display: block;
+        width: 100% !important;
     }
     
-    .btn-small {
-        font-size: 14px;
-        padding: 8px 12px;
-        flex: 1;
-        min-width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    .data-table tr {
+        margin-bottom: 15px;
+        border: 1px solid rgba(102, 126, 234, 0.2);
+        border-radius: 8px;
+        padding: 15px;
+        background: rgba(20, 20, 35, 0.95);
+        position: relative;
     }
     
-    .modal-content {
-        margin: 5% auto;
-        padding: 20px;
-        width: 95%;
-        border-radius: 20px;
-        max-height: 90vh;
-        overflow-y: auto;
+    .data-table td {
+        text-align: left !important;
+        padding: 8px 0 !important;
+        border-bottom: none !important;
+        position: relative;
+        padding-left: 120px !important;
     }
     
-    .modal-content h2 {
-        font-size: 20px;
-        margin-bottom: 20px;
+    .data-table td:before {
+        content: attr(data-label);
+        position: absolute;
+        left: 0;
+        width: 110px;
+        font-weight: 600;
+        color: #667eea;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
     
-    .close {
-        width: 35px;
-        height: 35px;
-        font-size: 24px;
-        top: 15px;
-        right: 15px;
+    .data-table td:last-child {
+        border-bottom: none;
     }
     
-    .material-form .form-row {
-        grid-template-columns: 1fr;
-        gap: 15px;
+    /* Ajustes especiais para cards */
+    .status-good,
+    .status-low {
+        display: inline-block;
+        margin-top: 5px;
     }
     
-    .form-actions {
+    .search-container {
         flex-direction: column;
         gap: 10px;
     }
     
-    .form-actions button {
+    .search-input {
+        width: 100%;
+    }
+    
+    .search-btn {
+        width: 100%;
+    }
+    
+    .form-container {
+        padding: 15px;
+    }
+    
+    .form-group {
+        margin-bottom: 15px;
+    }
+    
+    .form-group label {
+        font-size: 14px;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 14px;
+    }
+    
+    .form-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .form-buttons button {
         width: 100%;
     }
     
     .history-list {
-        max-height: 300px;
-    }
-    
-    .history-info {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
+        padding: 10px;
     }
     
     .history-item {
-        padding: 15px;
+        padding: 12px;
         margin-bottom: 10px;
     }
 }

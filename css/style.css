@@ -170,6 +170,10 @@ body {
         font-size: 2rem;
     }
     
+    .welcome-section p {
+        font-size: 1rem;
+    }
+    
     .quick-actions {
         grid-template-columns: 1fr;
         gap: 20px;
@@ -177,6 +181,7 @@ body {
     
     .stats-grid {
         grid-template-columns: 1fr;
+        gap: 20px;
     }
     
     .stat-number {
@@ -187,5 +192,82 @@ body {
         font-size: 1.8rem;
         margin-bottom: 20px;
         padding: 15px 0;
+    }
+    
+    .action-card {
+        padding: 20px;
+    }
+    
+    .action-icon {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+    }
+    
+    .action-title {
+        font-size: 1.3rem;
+        margin-bottom: 8px;
+    }
+    
+    .action-description {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-content {
+        padding: 10px;
+    }
+    
+    .welcome-section {
+        padding: 20px 15px;
+        margin-bottom: 20px;
+    }
+    
+    .welcome-section h2 {
+        font-size: 1.8rem;
+    }
+    
+    .welcome-section p {
+        font-size: 0.9rem;
+    }
+    
+    .quick-actions {
+        gap: 15px;
+    }
+    
+    .action-card {
+        padding: 15px;
+    }
+    
+    .action-icon {
+        font-size: 2rem;
+    }
+    
+    .action-title {
+        font-size: 1.2rem;
+    }
+    
+    .action-description {
+        font-size: 0.85rem;
+    }
+    
+    .stats-summary {
+        padding: 20px 15px;
+    }
+    
+    .stats-grid {
+        gap: 15px;
+    }
+    
+    .stat-item {
+        padding: 20px 15px;
+    }
+    
+    .stat-number {
+        font-size: 1.8rem;
+    }
+    
+    .stat-label {
+        font-size: 0.9rem;
     }
 }
