@@ -250,6 +250,28 @@ function addMovementToHistory(material, type, quantity, unit, date) {
         newCard.style.opacity = '1';
         newCard.style.transform = 'translateY(0)';
     }, 100);
+    
+    // Manter apenas 5 itens visíveis, mover o resto para ocultos
+    const allCards = historyGrid.querySelectorAll('.history-card');
+    if (allCards.length > 5) {
+        for (let i = 5; i < allCards.length; i++) {
+            allCards[i].classList.add('hidden-history');
+            if (document.getElementById('showMoreBtn').textContent === 'Mostrar Mais') {
+                allCards[i].style.display = 'none';
+            }
+        }
+    }
+    
+    // Fazer o mesmo para a lista original
+    const allItems = historyContainer.querySelectorAll('.history-item');
+    if (allItems.length > 5) {
+        for (let i = 5; i < allItems.length; i++) {
+            allItems[i].classList.add('hidden-history');
+            if (document.getElementById('showMoreBtn').textContent === 'Mostrar Mais') {
+                allItems[i].style.display = 'none';
+            }
+        }
+    }
 }
 
 function updateStockTable(material, type, quantity, unit) {
@@ -570,6 +592,47 @@ function searchMaterials() {
         `;
         noResultsMsg.textContent = `Nenhum material encontrado para "${document.getElementById('searchInput').value}"`;
         materialsGrid.appendChild(noResultsMsg);
+    }
+}
+
+function toggleHistory() {
+    const hiddenCards = document.querySelectorAll('.hidden-history');
+    const showMoreBtn = document.getElementById('showMoreBtn');
+    
+    if (showMoreBtn.textContent === 'Mostrar Mais') {
+        // Mostrar todos os itens ocultos
+        hiddenCards.forEach(card => {
+            card.style.display = '';
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                card.style.transition = 'all 0.3s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100);
+        });
+        
+        showMoreBtn.textContent = 'Mostrar Menos';
+        
+        // Também mostrar itens ocultos na lista original
+        const hiddenItems = document.querySelectorAll('.history-item.hidden-history');
+        hiddenItems.forEach(item => {
+            item.style.display = 'block';
+        });
+    } else {
+        // Ocultar itens extras
+        hiddenCards.forEach(card => {
+            card.style.display = 'none';
+        });
+        
+        showMoreBtn.textContent = 'Mostrar Mais';
+        
+        // Também ocultar itens extras na lista original
+        const hiddenItems = document.querySelectorAll('.history-item.hidden-history');
+        hiddenItems.forEach(item => {
+            item.style.display = 'none';
+        });
     }
 }
 

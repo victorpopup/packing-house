@@ -452,6 +452,34 @@
                 </div>
             </div>
 
+            <!-- Cards ocultos inicialmente -->
+            <div class="history-card hidden-history" style="display: none;">
+                <div class="history-header">
+                    <span class="movement-type saida">SAÍDA</span>
+                    <span class="date">12/02/2026 15:20</span>
+                </div>
+                <div class="history-content">
+                    <h4 class="material-name">Caixa Roxa</h4>
+                    <p class="quantity">-15 unidade</p>
+                </div>
+            </div>
+
+            <div class="history-card hidden-history" style="display: none;">
+                <div class="history-header">
+                    <span class="movement-type entrada">ENTRADA</span>
+                    <span class="date">12/02/2026 09:10</span>
+                </div>
+                <div class="history-content">
+                    <h4 class="material-name">Strado</h4>
+                    <p class="quantity">+40 unidade</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Botão Mostrar Mais -->
+        <div class="show-more-container">
+            <button class="btn-secondary" id="showMoreBtn" onclick="toggleHistory()">Mostrar Mais</button>
         </div>
 
         <!-- Manter lista original para compatibilidade (escondida) -->
@@ -534,6 +562,39 @@
                         <span class="quantity">+25 unidade</span>
 
                         <span class="date">13/02/2026 11:30</span>
+
+                    </div>
+
+                </div>
+
+                <!-- Itens ocultos inicialmente -->
+                <div class="history-item hidden-history" style="display: none;">
+
+                    <div class="history-info">
+
+                        <span class="movement-type saida">SAÍDA</span>
+
+                        <span class="material-name">Caixa Roxa</span>
+
+                        <span class="quantity">-15 unidade</span>
+
+                        <span class="date">12/02/2026 15:20</span>
+
+                    </div>
+
+                </div>
+
+                <div class="history-item hidden-history" style="display: none;">
+
+                    <div class="history-info">
+
+                        <span class="movement-type entrada">ENTRADA</span>
+
+                        <span class="material-name">Strado</span>
+
+                        <span class="quantity">+40 unidade</span>
+
+                        <span class="date">12/02/2026 09:10</span>
 
                     </div>
 
