@@ -99,10 +99,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const quantity = document.getElementById('movementQuantity').value;
             const unit = document.getElementById('movementUnit').value;
             const date = document.getElementById('movementDate').value;
-            const reason = document.getElementById('movementReason').value;
             
             // Add to history
-            addMovementToHistory(material, type, quantity, unit, date, reason);
+            addMovementToHistory(material, type, quantity, unit, date);
             
             // Update stock table
             updateStockTable(material, type, quantity, unit);
@@ -165,7 +164,7 @@ function updateMaterialFilter() {
     });
 }
 
-function addMovementToHistory(material, type, quantity, unit, date, reason) {
+function addMovementToHistory(material, type, quantity, unit, date) {
     const historyContainer = document.querySelector('.history-ol');
     const newItem = document.createElement('div');
     newItem.className = 'history-item';
