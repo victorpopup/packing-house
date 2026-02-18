@@ -5,23 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Packing House</title>
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/menu.css">
 </head>
 <body>
     <header>
         <h1 class="logo-text">Packing House</h1>
     </header>
 
-    <button class="menu-btn" onclick="toggleMenu()">☰</button>
-
-    <nav class="menu-nav" id="menuNav">
-        <ul>
-            <li><a href="index.html">Início</a></li>
-            <li><a href="pages/resumo.html">Resumo</a></li>
-            <li><a href="pages/estoque.html">Estoque</a></li>
-            <li><a href="pages/recepcao.html">Recepção</a></li>
-        </ul>
-    </nav>
 
     <main class="page-content">
         <h1 class="page-title">Início</h1>
@@ -50,6 +39,15 @@
             </a>
         </section>
     </main>
+
+    <!-- Botão Flutuante de Menu -->
+    <button class="floating-menu-btn" id="floatingMenuBtn">☰</button>
+    
+    <!-- Menu Flutuante -->
+    <div class="floating-menu" id="floatingMenu">
+        <a href="pages/resumo.html" class="menu-item">Resumo</a>
+        <a href="pages/estoque.html" class="menu-item">Estoque</a>
+    </div>
 
     <script src="js/script.js"></script>
 </body>

@@ -1,15 +1,29 @@
-// Menu functionality
-function toggleMenu() {
-    const menuNav = document.getElementById('menuNav');
-    menuNav.classList.toggle('active');
-}
-
-// Close menu when clicking outside
-document.addEventListener('click', (event) => {
-    const menuNav = document.getElementById('menuNav');
-    const menuBtn = document.querySelector('.menu-btn');
+// Botão Flutuante de Menu - Implementação Simples
+document.addEventListener('DOMContentLoaded', function() {
+    const menuBtn = document.getElementById('floatingMenuBtn');
+    const floatingMenu = document.getElementById('floatingMenu');
     
-    if (!menuNav.contains(event.target) && !menuBtn.contains(event.target)) {
-        menuNav.classList.remove('active');
-    }
+    // Toggle do menu
+    menuBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        floatingMenu.classList.toggle('active');
+        menuBtn.classList.toggle('active');
+    });
+    
+    // Fechar menu ao clicar fora
+    document.addEventListener('click', function(e) {
+        if (!floatingMenu.contains(e.target) && e.target !== menuBtn) {
+            floatingMenu.classList.remove('active');
+            menuBtn.classList.remove('active');
+        }
+    });
+    
+    // Fechar menu ao clicar em um item
+    const menuItems = document.querySelectorAll('.menu-item');
+    menuItems.forEach(item => {
+        item.addEventListener('click', function() {
+            floatingMenu.classList.remove('active');
+            menuBtn.classList.remove('active');
+        });
+    });
 });
