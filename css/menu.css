@@ -1,0 +1,185 @@
+/* CSS do Menu - Packing House */
+
+/* Botão Flutuante de Menu */
+.floating-menu-btn {
+    position: fixed !important;
+    bottom: 30px !important;
+    right: 30px !important;
+    width: 60px !important;
+    height: 60px !important;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 50% !important;
+    font-size: 24px !important;
+    cursor: pointer !important;
+    z-index: 9999 !important;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4) !important;
+    transition: all 0.3s ease !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+.floating-menu-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
+}
+
+.floating-menu-btn.active {
+    transform: rotate(45deg);
+}
+
+/* Menu Flutuante */
+.floating-menu {
+    position: fixed;
+    bottom: 100px;
+    right: 30px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+    z-index: 999;
+}
+
+.floating-menu.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.menu-item {
+    display: block;
+    padding: 15px 20px;
+    margin: 10px 0;
+    color: var(--text-primary);
+    text-decoration: none;
+    background: rgba(45, 55, 72, 0.95);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.menu-item:hover {
+    background: rgba(102, 126, 234, 0.3);
+    border-color: rgba(102, 126, 234, 0.5);
+    transform: translateX(-5px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+}
+
+/* Menu Lateral (usado em estoque.html) */
+.menu-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 15px;
+    font-size: 18px;
+    cursor: pointer;
+    z-index: 1001;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    transition: all 0.3s ease;
+}
+
+.menu-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+}
+
+.menu-btn.active {
+    transform: scale(0.95);
+}
+
+.menu-nav {
+    position: fixed;
+    top: 0;
+    left: -250px;
+    width: 250px;
+    height: 100vh;
+    background: rgba(26, 26, 46, 0.95);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    padding: 80px 20px 20px;
+    box-shadow: 2px 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.menu-nav.active {
+    left: 0;
+}
+
+.menu-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menu-nav li {
+    margin: 15px 0;
+}
+
+.menu-nav a {
+    display: block;
+    color: var(--text-primary);
+    text-decoration: none;
+    padding: 15px 20px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    border: 1px solid transparent;
+}
+
+.menu-nav a:hover {
+    background: rgba(102, 126, 234, 0.2);
+    border-color: var(--border-color);
+    transform: translateX(5px);
+}
+
+.menu-nav a.active {
+    background: rgba(102, 126, 234, 0.3);
+    border-color: rgba(102, 126, 234, 0.5);
+}
+
+/* Responsividade do Menu */
+@media (max-width: 768px) {
+    .floating-menu-btn {
+        width: 50px !important;
+        height: 50px !important;
+        font-size: 20px !important;
+        bottom: 20px !important;
+        right: 20px !important;
+    }
+    
+    .floating-menu {
+        bottom: 80px;
+        right: 20px;
+    }
+    
+    .menu-item {
+        padding: 12px 15px;
+        font-size: 14px;
+        margin: 6px 0;
+    }
+    
+    .menu-nav {
+        width: 200px;
+        left: -200px;
+    }
+    
+    .menu-btn {
+        top: 15px;
+        left: 15px;
+        padding: 8px 12px;
+        font-size: 16px;
+    }
+}

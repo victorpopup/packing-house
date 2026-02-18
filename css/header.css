@@ -1,0 +1,57 @@
+/* CSS do Cabeçalho - Packing House */
+
+/* Header */
+header {
+    background: linear-gradient(135deg, #2d3748 0%, #1e293b 100%);
+    padding: 10px 20px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60px;
+}
+
+.logo-img {
+    height: 50px;
+    width: auto;
+    max-width: 200px;
+    transition: all 0.3s ease;
+}
+
+.logo-img:hover {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+}
+
+/* Esconder texto antigo */
+.logo-text {
+    display: none;
+}
+
+/* Responsividade do Cabeçalho */
+@media (max-width: 768px) {
+    header {
+        padding: 8px 15px;
+    }
+    
+    .logo-img {
+        height: 40px;
+        max-width: 160px;
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        padding: 6px 10px;
+    }
+    
+    .logo-img {
+        height: 35px;
+        max-width: 140px;
+    }
+}
