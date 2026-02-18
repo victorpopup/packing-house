@@ -3,6 +3,10 @@ function showAddMaterialModal() {
     document.getElementById('addMaterialModal').style.display = 'block';
 }
 
+function showEditMaterialModal() {
+    document.getElementById('editMaterialModal').style.display = 'block';
+}
+
 function closeModal(modalId) {
     document.getElementById(modalId).style.display = 'none';
 }
@@ -39,6 +43,29 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize material filter with existing materials
     updateMaterialFilter();
+    
+    // Edit material form
+    const editMaterialForm = document.querySelector('#editMaterialModal .material-form');
+    if (editMaterialForm) {
+        editMaterialForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const nome = document.getElementById('editMaterialNome').value;
+            const quantidade = document.getElementById('editMaterialQuantidade').value;
+            const unidade = document.getElementById('editMaterialUnidade').value;
+            const rowIndex = document.getElementById('editMaterialModal').dataset.rowIndex;
+            
+            // Update material in table
+            updateMaterialInTable(rowIndex, nome, quantidade, unidade);
+            
+            // Reset form and close modal
+            editMaterialForm.reset();
+            delete document.getElementById('editMaterialModal').dataset.rowIndex;
+            closeModal('editMaterialModal');
+            
+            showSuccessMessage('Material atualizado com sucesso!');
+        });
+    }
     
     // Material form
     const materialForm = document.querySelector('.material-form');
@@ -246,6 +273,46 @@ function deleteMaterial(button) {
             showSuccessMessage(`Material "${materialName}" excluído com sucesso!`);
         }, 300);
     }
+}
+
+function editMaterial(button) {
+    const row = button.closest('tr');
+    const rowIndex = row.rowIndex - 1; // Adjust for header
+    
+    // Get current values
+    const nome = row.cells[0].textContent;
+    const quantidade = row.cells[1].textContent;
+    const unidade = row.cells[2].textContent;
+    
+    // Fill edit form
+    document.getElementById('editMaterialNome').value = nome;
+    document.getElementById('editMaterialQuantidade').value = quantidade;
+    document.getElementById('editMaterialUnidade').value = unidade;
+    
+    // Store row index for later use
+    document.getElementById('editMaterialModal').dataset.rowIndex = rowIndex;
+    
+    // Show modal
+    showEditMaterialModal();
+}
+
+function updateMaterialInTable(rowIndex, nome, quantidade, unidade) {
+    const table = document.querySelector('.data-table tbody');
+    const row = table.rows[rowIndex];
+    
+    // Update cells
+    row.cells[0].textContent = nome;
+    row.cells[1].textContent = quantidade;
+    row.cells[2].textContent = unidade;
+    
+    // Update status
+    const status = quantidade < 20 ? 'Baixo' : 'Normal';
+    const statusClass = quantidade < 20 ? 'status-low' : 'status-good';
+    row.cells[3].innerHTML = `<span class="${statusClass}">${status}</span>`;
+    
+    // Update stats and filters
+    updateStats();
+    updateMaterialFilter();
 }
 
 function filterHistory() {

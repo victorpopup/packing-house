@@ -119,57 +119,18 @@
 
                 <tr>
 
-                    <td data-label="Material">Maçã Gala</td>
+                    <td data-label="Material">Caixa Roxa</td>
 
                     <td data-label="Quantidade">250</td>
-
-                    <td data-label="Unidade">caixa</td>
-
-                    <td data-label="Status"><span class="status-good">Normal</span></td>
-
-                    <td data-label="Ações"><button class="btn-delete" onclick="deleteMaterial(this)">Excluir</button></td>
-
-                </tr>
-
-                <tr>
-
-                    <td data-label="Material">Laranja Pera</td>
-
-                    <td data-label="Quantidade">15</td>
-
-                    <td data-label="Unidade">caixa</td>
-
-                    <td data-label="Status"><span class="status-low">Baixo</span></td>
-
-                    <td data-label="Ações"><button class="btn-delete" onclick="deleteMaterial(this)">Excluir</button></td>
-
-                </tr>
-
-                <tr>
-
-                    <td data-label="Material">Uva Itália</td>
-
-                    <td data-label="Quantidade">180</td>
-
-                    <td data-label="Unidade">caixa</td>
-
-                    <td data-label="Status"><span class="status-good">Normal</span></td>
-
-                    <td data-label="Ações"><button class="btn-delete" onclick="deleteMaterial(this)">Excluir</button></td>
-
-                </tr>
-
-                <tr>
-
-                    <td data-label="Material">Papelão</td>
-
-                    <td data-label="Quantidade">50</td>
 
                     <td data-label="Unidade">unidade</td>
 
                     <td data-label="Status"><span class="status-good">Normal</span></td>
 
-                    <td data-label="Ações"><button class="btn-delete" onclick="deleteMaterial(this)">Excluir</button></td>
+                    <td data-label="Ações">
+                        <button class="btn-edit" onclick="editMaterial(this)">Editar</button>
+                        <button class="btn-delete" onclick="deleteMaterial(this)">Excluir</button>
+                    </td>
 
                 </tr>
 
@@ -177,27 +138,50 @@
 
                     <td data-label="Material">Bolsão</td>
 
-                    <td data-label="Quantidade">200</td>
+                    <td data-label="Quantidade">15</td>
 
                     <td data-label="Unidade">unidade</td>
 
-                    <td data-label="Status"><span class="status-good">Normal</span></td>
+                    <td data-label="Status"><span class="status-low">Baixo</span></td>
 
-                    <td data-label="Ações"><button class="btn-delete" onclick="deleteMaterial(this)">Excluir</button></td>
+                    <td data-label="Ações">
+                        <button class="btn-edit" onclick="editMaterial(this)">Editar</button>
+                        <button class="btn-delete" onclick="deleteMaterial(this)">Excluir</button>
+                    </td>
 
                 </tr>
 
                 <tr>
 
-                    <td data-label="Material">Plástico Filme</td>
+                    <td data-label="Material">Gerador</td>
 
-                    <td data-label="Quantidade">100</td>
+                    <td data-label="Quantidade">180</td>
 
-                    <td data-label="Unidade">fardo</td>
+                    <td data-label="Unidade">unidade</td>
 
-                    <td data-label="Status"><span class="status-low">Baixo</span></td>
+                    <td data-label="Status"><span class="status-good">Normal</span></td>
 
-                    <td data-label="Ações"><button class="btn-delete" onclick="deleteMaterial(this)">Excluir</button></td>
+                    <td data-label="Ações">
+                        <button class="btn-edit" onclick="editMaterial(this)">Editar</button>
+                        <button class="btn-delete" onclick="deleteMaterial(this)">Excluir</button>
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <td data-label="Material">Strado</td>
+
+                    <td data-label="Quantidade">50</td>
+
+                    <td data-label="Unidade">unidade</td>
+
+                    <td data-label="Status"><span class="status-good">Normal</span></td>
+
+                    <td data-label="Ações">
+                        <button class="btn-edit" onclick="editMaterial(this)">Editar</button>
+                        <button class="btn-delete" onclick="deleteMaterial(this)">Excluir</button>
+                    </td>
 
                 </tr>
 
@@ -233,17 +217,13 @@
 
                         <option value="">Selecione um material</option>
 
-                        <option value="Maçã Gala">Maçã Gala</option>
-
-                        <option value="Laranja Pera">Laranja Pera</option>
-
-                        <option value="Uva Itália">Uva Itália</option>
-
-                        <option value="Papelão">Papelão</option>
+                        <option value="Caixa Roxa">Caixa Roxa</option>
 
                         <option value="Bolsão">Bolsão</option>
 
-                        <option value="Plástico Filme">Plástico Filme</option>
+                        <option value="Gerador">Gerador</option>
+
+                        <option value="Strado">Strado</option>
 
                     </select>
 
@@ -332,12 +312,10 @@
         <div class="search-section">
             <select id="filterMaterial" class="search-input">
                 <option value="">Todos os materiais</option>
-                <option value="Maçã Gala">Maçã Gala</option>
-                <option value="Laranja Pera">Laranja Pera</option>
-                <option value="Uva Itália">Uva Itália</option>
-                <option value="Papelão">Papelão</option>
+                <option value="Caixa Roxa">Caixa Roxa</option>
                 <option value="Bolsão">Bolsão</option>
-                <option value="Plástico Filme">Plástico Filme</option>
+                <option value="Gerador">Gerador</option>
+                <option value="Strado">Strado</option>
             </select>
 
             <input type="date" id="filterDate" class="search-input">
@@ -364,9 +342,9 @@
 
                         <span class="movement-type entrada">ENTRADA</span>
 
-                        <span class="material-name">Maçã Gala</span>
+                        <span class="material-name">Caixa Roxa</span>
 
-                        <span class="quantity">+50 caixa</span>
+                        <span class="quantity">+50 unidade</span>
 
                         <span class="date">15/02/2026 14:30</span>
 
@@ -380,9 +358,9 @@
 
                         <span class="movement-type saida">SAÍDA</span>
 
-                        <span class="material-name">Laranja Pera</span>
+                        <span class="material-name">Bolsão</span>
 
-                        <span class="quantity">-20 caixa</span>
+                        <span class="quantity">-20 unidade</span>
 
                         <span class="date">15/02/2026 10:15</span>
 
@@ -451,6 +429,68 @@
                     <button type="submit" class="btn-primary">Adicionar</button>
 
                     <button type="button" class="btn-secondary" onclick="closeModal('addMaterialModal')">Cancelar</button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- Modal Editar Material -->
+
+    <div id="editMaterialModal" class="modal">
+
+        <div class="modal-content">
+
+            <span class="close" onclick="closeModal('editMaterialModal')">&times;</span>
+
+            <h2>Editar Material</h2>
+
+            <form class="material-form">
+
+                <div class="form-group">
+
+                    <label for="editMaterialNome">Nome do Material</label>
+
+                    <input type="text" id="editMaterialNome" required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="editMaterialQuantidade">Quantidade</label>
+
+                    <input type="number" id="editMaterialQuantidade" required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="editMaterialUnidade">Unidade</label>
+
+                    <select id="editMaterialUnidade" required>
+
+                        <option value="">Selecione...</option>
+
+                        <option value="unidade">Unidade</option>
+
+                        <option value="fardo">Fardo</option>
+
+                        <option value="amarrado">Amarrado</option>
+
+                        <option value="caixa">Caixa</option>
+
+                    </select>
+
+                </div>
+
+                <div class="form-actions">
+
+                    <button type="submit" class="btn-primary">Salvar</button>
+
+                    <button type="button" class="btn-secondary" onclick="closeModal('editMaterialModal')">Cancelar</button>
 
                 </div>
 
