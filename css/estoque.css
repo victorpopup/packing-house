@@ -328,7 +328,7 @@ header h1 {
 }
 
 .material-name {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 600;
     color: #e8e8e8;
     margin: 0;
@@ -432,7 +432,7 @@ header h1 {
 }
 
 .history-content .material-name {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 600;
     color: #e8e8e8;
     margin: 0;
@@ -810,7 +810,7 @@ header h1 {
     }
     
     .material-name {
-        font-size: 14px;
+        font-size: 16px;
     }
     
     .material-quantity {
@@ -843,7 +843,7 @@ header h1 {
     }
     
     .history-content .material-name {
-        font-size: 14px;
+        font-size: 16px;
     }
     
     .history-content .quantity {
