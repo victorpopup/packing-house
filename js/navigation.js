@@ -3,13 +3,16 @@
 
 class NavigationManager {
     constructor() {
+        console.log('NavigationManager: Inicializando...');
         this.init();
     }
 
     init() {
+        console.log('NavigationManager: Configurando menus...');
         this.setupFloatingMenu();
         this.setupSidebarMenu();
         this.setupMenuItems();
+        console.log('NavigationManager: Configuração concluída!');
     }
 
     // Configuração do Menu Flutuante (usado em resumo.html e estoque.html)
@@ -17,9 +20,13 @@ class NavigationManager {
         const menuBtn = document.getElementById('floatingMenuBtn');
         const floatingMenu = document.getElementById('floatingMenu');
         
+        console.log('Menu Flutuante - Botão encontrado:', !!menuBtn);
+        console.log('Menu Flutuante - Menu encontrado:', !!floatingMenu);
+        
         if (menuBtn && floatingMenu) {
             // Toggle do menu flutuante
             menuBtn.addEventListener('click', (e) => {
+                console.log('Menu flutuante clicado!');
                 e.stopPropagation();
                 floatingMenu.classList.toggle('active');
                 menuBtn.classList.toggle('active');
@@ -32,6 +39,8 @@ class NavigationManager {
                     menuBtn.classList.remove('active');
                 }
             });
+        } else {
+            console.warn('Menu flutuante não encontrado no DOM');
         }
     }
 
@@ -39,6 +48,9 @@ class NavigationManager {
     setupSidebarMenu() {
         const menuBtn = document.querySelector('.menu-btn');
         const menuNav = document.getElementById('menuNav');
+        
+        console.log('Menu Lateral - Botão encontrado:', !!menuBtn);
+        console.log('Menu Lateral - Menu encontrado:', !!menuNav);
         
         if (menuBtn && menuNav) {
             // Função global toggleMenu para compatibilidade
@@ -49,6 +61,7 @@ class NavigationManager {
 
             // Adicionar evento de clique ao botão
             menuBtn.addEventListener('click', (e) => {
+                console.log('Menu lateral clicado!');
                 e.stopPropagation();
                 this.toggleSidebar();
             });
@@ -60,6 +73,8 @@ class NavigationManager {
                     menuBtn.classList.remove('active');
                 }
             });
+        } else {
+            console.log('Menu lateral não encontrado (normal em algumas páginas)');
         }
     }
 
@@ -67,6 +82,8 @@ class NavigationManager {
     setupMenuItems() {
         // Itens do menu flutuante
         const floatingMenuItems = document.querySelectorAll('.floating-menu .menu-item');
+        console.log('Itens menu flutuante encontrados:', floatingMenuItems.length);
+        
         floatingMenuItems.forEach(item => {
             item.addEventListener('click', () => {
                 const floatingMenu = document.getElementById('floatingMenu');
@@ -80,6 +97,8 @@ class NavigationManager {
 
         // Itens do menu lateral
         const sidebarMenuItems = document.querySelectorAll('#menuNav a');
+        console.log('Itens menu lateral encontrados:', sidebarMenuItems.length);
+        
         sidebarMenuItems.forEach(item => {
             item.addEventListener('click', () => {
                 const menuNav = document.getElementById('menuNav');
@@ -132,6 +151,7 @@ class NavigationManager {
 
 // Inicialização quando o DOM estiver carregado
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM carregado, criando NavigationManager...');
     window.navigationManager = new NavigationManager();
 });
 
