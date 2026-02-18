@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Packing House - Resumo</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/menu.css">
+</head>
+<body>
+    <header>
+        <h1 class="logo-text">Packing House</h1>
+    </header>
+
+    <button class="menu-btn" onclick="toggleMenu()">☰</button>
+
+    <nav class="menu-nav" id="menuNav">
+        <ul>
+            <li><a href="../index.html">Início</a></li>
+            <li><a href="resumo.html">Resumo</a></li>
+            <li><a href="estoque.html">Estoque</a></li>
+            <li><a href="recepcao.html">Recepção</a></li>
+        </ul>
+    </nav>
+
+    <main class="page-content">
+        <h1 class="page-title">Resumo</h1>
+        <section class="welcome-section">
+            <h2>Bem-vindo ao Packing House</h2>
+            <p>Sistema completo de gerenciamento de estoque e controle de mercadorias para o seu negócio.</p>
+        </section>
+
+        <section class="quick-actions">
+            <a href="estoque.html" class="action-card">
+                <div class="action-icon">📦</div>
+                <h3 class="action-title">Estoque</h3>
+                <p class="action-description">Gerencie seus materiais e controle as quantidades em tempo real</p>
+            </a>
+            
+            <a href="recepcao.html" class="action-card">
+                <div class="action-icon">📥</div>
+                <h3 class="action-title">Recepção</h3>
+                <p class="action-description">Cadastre novas mercadorias e registre entradas no sistema</p>
+            </a>
+            
+            <a href="estoque.html" class="action-card">
+                <div class="action-icon">📊</div>
+                <h3 class="action-title">Movimentações</h3>
+                <p class="action-description">Visualize o histórico completo de entradas e saídas</p>
+            </a>
+        </section>
+
+        <section class="stats-summary">
+            <h2>Resumo Rápido</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">1.234</div>
+                    <div class="stat-label">Total em Estoque</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">Estoque Baixo</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">45</div>
+                    <div class="stat-label">Movimentações Hoje</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
