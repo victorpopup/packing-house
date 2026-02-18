@@ -93,7 +93,72 @@
 
         
 
-        <table class="data-table">
+        <div class="materials-grid" id="materialsGrid">
+
+            <div class="material-card">
+                <div class="material-header">
+                    <h3 class="material-name">Caixa Roxa</h3>
+                    <span class="material-status status-good">Normal</span>
+                </div>
+                <div class="material-info">
+                    <p class="material-quantity">250</p>
+                    <span class="material-unit">unidade</span>
+                </div>
+                <div class="material-actions">
+                    <button class="btn-edit" onclick="editMaterial(this)">Editar</button>
+                    <button class="btn-delete" onclick="deleteMaterial(this)">Excluir</button>
+                </div>
+            </div>
+
+            <div class="material-card">
+                <div class="material-header">
+                    <h3 class="material-name">Bolsão</h3>
+                    <span class="material-status status-low">Baixo</span>
+                </div>
+                <div class="material-info">
+                    <p class="material-quantity">15</p>
+                    <span class="material-unit">unidade</span>
+                </div>
+                <div class="material-actions">
+                    <button class="btn-edit" onclick="editMaterial(this)">Editar</button>
+                    <button class="btn-delete" onclick="deleteMaterial(this)">Excluir</button>
+                </div>
+            </div>
+
+            <div class="material-card">
+                <div class="material-header">
+                    <h3 class="material-name">Gerador</h3>
+                    <span class="material-status status-good">Normal</span>
+                </div>
+                <div class="material-info">
+                    <p class="material-quantity">180</p>
+                    <span class="material-unit">unidade</span>
+                </div>
+                <div class="material-actions">
+                    <button class="btn-edit" onclick="editMaterial(this)">Editar</button>
+                    <button class="btn-delete" onclick="deleteMaterial(this)">Excluir</button>
+                </div>
+            </div>
+
+            <div class="material-card">
+                <div class="material-header">
+                    <h3 class="material-name">Strado</h3>
+                    <span class="material-status status-good">Normal</span>
+                </div>
+                <div class="material-info">
+                    <p class="material-quantity">50</p>
+                    <span class="material-unit">unidade</span>
+                </div>
+                <div class="material-actions">
+                    <button class="btn-edit" onclick="editMaterial(this)">Editar</button>
+                    <button class="btn-delete" onclick="deleteMaterial(this)">Excluir</button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Manter tabela original para compatibilidade com JavaScript (escondida) -->
+        <table class="data-table" style="display: none;">
 
             <thead>
 

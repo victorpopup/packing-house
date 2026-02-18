@@ -131,6 +131,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function addMaterialToTable(nome, quantidade, unidade) {
+    // Adicionar à tabela oculta para compatibilidade
     const table = document.querySelector('.data-table tbody');
     const newRow = table.insertRow();
     
@@ -145,6 +146,28 @@ function addMaterialToTable(nome, quantidade, unidade) {
         <td data-label="Status"><span class="${statusClass}">${status}</span></td>
         <td data-label="Ações"><button class="btn-delete" onclick="deleteMaterial(this)">Excluir</button></td>
     `;
+    
+    // Adicionar ao grid de cards visível
+    const materialsGrid = document.getElementById('materialsGrid');
+    const newCard = document.createElement('div');
+    newCard.className = 'material-card';
+    
+    newCard.innerHTML = `
+        <div class="material-header">
+            <h3 class="material-name">${nome}</h3>
+            <span class="material-status ${statusClass}">${status}</span>
+        </div>
+        <div class="material-info">
+            <p class="material-quantity">${quantidade}</p>
+            <span class="material-unit">${unidade}</span>
+        </div>
+        <div class="material-actions">
+            <button class="btn-edit" onclick="editMaterial(this)">Editar</button>
+            <button class="btn-delete" onclick="deleteMaterial(this)">Excluir</button>
+        </div>
+    `;
+    
+    materialsGrid.appendChild(newCard);
     
     // Update material filter dropdown
     updateMaterialFilter();
@@ -271,16 +294,26 @@ function showSuccessMessage(message) {
 
 function deleteMaterial(button) {
     if (confirm('Tem certeza que deseja excluir este material?')) {
-        const row = button.closest('tr');
-        const materialName = row.cells[0].textContent;
+        const card = button.closest('.material-card');
+        const materialName = card.querySelector('.material-name').textContent;
         
-        // Add fade out animation
-        row.style.transition = 'all 0.3s ease';
-        row.style.opacity = '0';
-        row.style.transform = 'translateX(-20px)';
+        // Encontrar e remover a linha correspondente na tabela oculta
+        const table = document.querySelector('.data-table tbody');
+        const rows = table.getElementsByTagName('tr');
+        for (let row of rows) {
+            if (row.cells[0].textContent === materialName) {
+                row.remove();
+                break;
+            }
+        }
+        
+        // Add fade out animation ao card
+        card.style.transition = 'all 0.3s ease';
+        card.style.opacity = '0';
+        card.style.transform = 'translateX(-20px)';
         
         setTimeout(() => {
-            row.remove();
+            card.remove();
             updateStats();
             updateMaterialFilter();
             showSuccessMessage(`Material "${materialName}" excluído com sucesso!`);
@@ -289,29 +322,52 @@ function deleteMaterial(button) {
 }
 
 function editMaterial(button) {
-    const row = button.closest('tr');
-    const rowIndex = row.rowIndex - 1; // Adjust for header
+    const card = button.closest('.material-card');
+    const materialName = card.querySelector('.material-name').textContent;
     
-    // Get current values
-    const nome = row.cells[0].textContent;
-    const quantidade = row.cells[1].textContent;
-    const unidade = row.cells[2].textContent;
+    // Encontrar a linha correspondente na tabela oculta
+    const table = document.querySelector('.data-table tbody');
+    const rows = table.getElementsByTagName('tr');
+    let targetRow = null;
+    let rowIndex = -1;
     
-    // Fill edit form
-    document.getElementById('editMaterialNome').value = nome;
-    document.getElementById('editMaterialQuantidade').value = quantidade;
-    document.getElementById('editMaterialUnidade').value = unidade;
+    for (let i = 0; i < rows.length; i++) {
+        if (rows[i].cells[0].textContent === materialName) {
+            targetRow = rows[i];
+            rowIndex = i;
+            break;
+        }
+    }
     
-    // Store row index for later use
-    document.getElementById('editMaterialModal').dataset.rowIndex = rowIndex;
-    
-    // Show modal
-    showEditMaterialModal();
+    if (targetRow) {
+        // Get current values from table row
+        const nome = targetRow.cells[0].textContent;
+        const quantidade = targetRow.cells[1].textContent;
+        const unidade = targetRow.cells[2].textContent;
+        
+        // Fill edit form
+        document.getElementById('editMaterialNome').value = nome;
+        document.getElementById('editMaterialQuantidade').value = quantidade;
+        document.getElementById('editMaterialUnidade').value = unidade;
+        
+        // Store row index for later use
+        document.getElementById('editMaterialModal').dataset.rowIndex = rowIndex;
+        
+        // Store card reference for later update
+        document.getElementById('editMaterialModal').dataset.cardElement = card.outerHTML;
+        
+        // Show modal
+        showEditMaterialModal();
+    }
 }
 
 function updateMaterialInTable(rowIndex, nome, quantidade, unidade) {
+    // Update table row
     const table = document.querySelector('.data-table tbody');
     const row = table.rows[rowIndex];
+    
+    // Get old material name before updating
+    const oldMaterialName = row.cells[0].textContent;
     
     // Update cells
     row.cells[0].textContent = nome;
@@ -322,6 +378,25 @@ function updateMaterialInTable(rowIndex, nome, quantidade, unidade) {
     const status = quantidade < 20 ? 'Baixo' : 'Normal';
     const statusClass = quantidade < 20 ? 'status-low' : 'status-good';
     row.cells[3].innerHTML = `<span class="${statusClass}">${status}</span>`;
+    
+    // Find and update corresponding card using the old material name
+    const materialsGrid = document.getElementById('materialsGrid');
+    const cards = materialsGrid.getElementsByClassName('material-card');
+    
+    for (let card of cards) {
+        const cardMaterialName = card.querySelector('.material-name').textContent;
+        if (cardMaterialName === oldMaterialName) {
+            // Update card content
+            card.querySelector('.material-name').textContent = nome;
+            card.querySelector('.material-quantity').textContent = quantidade;
+            card.querySelector('.material-unit').textContent = unidade;
+            
+            const statusElement = card.querySelector('.material-status');
+            statusElement.textContent = status;
+            statusElement.className = `material-status ${statusClass}`;
+            break;
+        }
+    }
     
     // Update stats and filters
     updateStats();
@@ -399,18 +474,18 @@ function clearFilters() {
 
 function searchMaterials() {
     const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
-    const table = document.querySelector('.data-table tbody');
-    const rows = table.getElementsByTagName('tr');
+    const materialsGrid = document.getElementById('materialsGrid');
+    const cards = materialsGrid.getElementsByClassName('material-card');
     let visibleCount = 0;
     
-    for (let row of rows) {
-        const materialName = row.cells[0].textContent.toLowerCase();
+    for (let card of cards) {
+        const materialName = card.querySelector('.material-name').textContent.toLowerCase();
         
         if (searchTerm === '' || materialName.includes(searchTerm)) {
-            row.style.display = '';
+            card.style.display = '';
             visibleCount++;
         } else {
-            row.style.display = 'none';
+            card.style.display = 'none';
         }
     }
     
@@ -421,14 +496,20 @@ function searchMaterials() {
     }
     
     if (visibleCount === 0 && searchTerm !== '') {
-        const noResultsMsg = document.createElement('tr');
+        const noResultsMsg = document.createElement('div');
         noResultsMsg.className = 'no-search-results';
-        noResultsMsg.innerHTML = `
-            <td colspan="5" style="text-align: center; padding: 40px; color: #a8a8a8; font-style: italic;">
-                Nenhum material encontrado para "${document.getElementById('searchInput').value}"
-            </td>
+        noResultsMsg.style.cssText = `
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px;
+            color: #a8a8a8;
+            font-style: italic;
+            background: rgba(20, 20, 35, 0.95);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 12px;
         `;
-        table.appendChild(noResultsMsg);
+        noResultsMsg.textContent = `Nenhum material encontrado para "${document.getElementById('searchInput').value}"`;
+        materialsGrid.appendChild(noResultsMsg);
     }
 }
 

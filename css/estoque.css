@@ -286,42 +286,102 @@ header h1 {
     letter-spacing: 1px;
 }
 
-.data-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
+/* Layout em Grid para Cards de Materiais */
+.materials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.material-card {
+    background: rgba(20, 20, 35, 0.95);
+    border: 1px solid rgba(102, 126, 234, 0.2);
     border-radius: 12px;
+    padding: 15px;
+    transition: all 0.3s ease;
+    position: relative;
     overflow: hidden;
 }
 
-.data-table th,
-.data-table td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+.material-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
+    border-color: rgba(102, 126, 234, 0.4);
 }
 
-.data-table th {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    font-weight: 700;
-    font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+.material-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
 }
 
-.data-table tbody tr {
-    transition: all 0.3s ease;
-    background: rgba(20, 20, 35, 0.95);
+.material-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
 }
 
-.data-table tbody tr:hover {
-    background: rgba(102, 126, 234, 0.1);
-    transform: scale(1.01);
-}
-
-.data-table td {
+.material-name {
+    font-size: 16px;
+    font-weight: 600;
     color: #e8e8e8;
+    margin: 0;
+    flex: 1;
+}
+
+.material-status {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.material-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.material-quantity {
+    font-size: 24px;
+    font-weight: 700;
+    color: #667eea;
+    margin: 0;
+}
+
+.material-unit {
+    font-size: 12px;
+    color: #a8a8a8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.material-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.material-actions .btn-edit,
+.material-actions .btn-delete {
+    padding: 6px 12px;
+    font-size: 11px;
+    margin: 0;
+}
+
+/* Esconder tabela original em desktop */
+.data-table {
+    display: none;
 }
 
 .status-good {
@@ -628,66 +688,37 @@ header h1 {
         overflow-x: auto;
     }
     
-    /* Tabela responsiva - Transforma em cards */
-    .data-table {
-        font-size: 12px;
-        display: block;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
+    /* Cards responsivos */
+    .materials-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
     }
     
-    .data-table thead {
-        display: none;
-    }
-    
-    .data-table tbody,
-    .data-table tr,
-    .data-table td {
-        display: block;
-        width: 100% !important;
-    }
-    
-    .data-table tr {
-        margin-bottom: 12px;
-        border: 1px solid rgba(102, 126, 234, 0.2);
-        border-radius: 6px;
+    .material-card {
         padding: 12px;
-        background: rgba(20, 20, 35, 0.95);
-        position: relative;
     }
     
-    .data-table td {
-        text-align: left !important;
-        padding: 6px 0 !important;
-        border-bottom: none !important;
-        position: relative;
-        padding-left: 100px !important;
-        font-size: 12px;
+    .material-name {
+        font-size: 14px;
     }
     
-    .data-table td:before {
-        content: attr(data-label);
-        position: absolute;
-        left: 0;
-        width: 90px;
-        font-weight: 600;
-        color: #667eea;
+    .material-quantity {
+        font-size: 20px;
+    }
+    
+    .material-status {
+        font-size: 9px;
+        padding: 3px 6px;
+    }
+    
+    .material-actions {
+        gap: 6px;
+    }
+    
+    .material-actions .btn-edit,
+    .material-actions .btn-delete {
+        padding: 5px 8px;
         font-size: 10px;
-        text-transform: uppercase;
-        letter-spacing: 0.3px;
-    }
-    
-    .data-table td:last-child {
-        border-bottom: none;
-    }
-    
-    /* Ajustes especiais para cards */
-    .status-good,
-    .status-low {
-        display: inline-block;
-        margin-top: 3px;
-        font-size: 10px;
-        padding: 3px 8px;
     }
     
     .search-container {
