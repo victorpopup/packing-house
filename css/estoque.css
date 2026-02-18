@@ -154,15 +154,14 @@ header h1 {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     border: none;
-    padding: 15px 30px;
     border-radius: 12px;
-    cursor: pointer;
+    padding: 10px 20px;
+    font-size: 14px;
     font-weight: 600;
-    font-size: 16px;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.8px;
 }
 
 .btn-primary:hover {
@@ -174,29 +173,23 @@ header h1 {
     background: rgba(255, 255, 255, 0.1);
     color: #667eea;
     border: 2px solid #667eea;
-    padding: 15px 30px;
+    padding: 10px 20px;
     border-radius: 12px;
     cursor: pointer;
     font-weight: 600;
-    font-size: 16px;
+    font-size: 14px;
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
-}
-
-.btn-secondary:hover {
-    background: #667eea;
-    color: white;
-    transform: translateY(-2px);
 }
 
 .btn-small {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     border: none;
-    padding: 8px 12px;
+    padding: 6px 10px;
     border-radius: 8px;
     cursor: pointer;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     transition: all 0.3s ease;
     margin: 2px;
@@ -204,9 +197,6 @@ header h1 {
     letter-spacing: 0.5px;
 }
 
-.btn-small:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
 /* Table Section */
@@ -229,7 +219,7 @@ header h1 {
 .section-header h2 {
     color: #667eea;
     margin: 0;
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -534,64 +524,72 @@ header h1 {
 /* Responsive */
 @media (max-width: 768px) {
     .page-content {
-        margin: 15px auto;
-        padding: 0 10px;
+        margin: 10px auto;
+        padding: 0 8px;
     }
     
     header {
-        padding: 15px 10px;
+        padding: 10px 8px;
     }
     
     header h1 {
-        font-size: 20px;
-        margin-top: -30px;
-        padding: 6px 15px;
+        font-size: 18px;
+        margin-top: -25px;
+        padding: 5px 12px;
     }
     
     .page-title {
-        font-size: 24px;
-        margin: 20px 0;
+        font-size: 18px;
+        margin: 12px 0;
+    }
+    
+    .section-header {
+        margin-bottom: 12px;
+    }
+    
+    .section-header h2 {
+        font-size: 16px;
     }
     
     .stats-container {
         grid-template-columns: 1fr;
-        gap: 15px;
-        margin-bottom: 25px;
+        gap: 12px;
+        margin-bottom: 20px;
     }
     
     .stat-card {
-        padding: 20px;
+        padding: 15px;
         text-align: center;
     }
     
     .stat-card h3 {
-        font-size: 16px;
+        font-size: 14px;
     }
     
     .stat-number {
-        font-size: 28px;
+        font-size: 24px;
     }
     
     .action-buttons {
         flex-direction: column;
-        gap: 10px;
+        gap: 8px;
     }
     
     .btn {
         width: 100%;
-        font-size: 14px;
-        padding: 12px;
+        font-size: 13px;
+        padding: 10px;
     }
     
     .table-section {
-        padding: 15px;
-        border-radius: 15px;
+        padding: 10px;
+        border-radius: 12px;
         overflow-x: auto;
     }
     
     /* Tabela responsiva - Transforma em cards */
     .data-table {
-        font-size: 14px;
+        font-size: 12px;
         display: block;
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
@@ -609,32 +607,33 @@ header h1 {
     }
     
     .data-table tr {
-        margin-bottom: 15px;
+        margin-bottom: 12px;
         border: 1px solid rgba(102, 126, 234, 0.2);
-        border-radius: 8px;
-        padding: 15px;
+        border-radius: 6px;
+        padding: 12px;
         background: rgba(20, 20, 35, 0.95);
         position: relative;
     }
     
     .data-table td {
         text-align: left !important;
-        padding: 8px 0 !important;
+        padding: 6px 0 !important;
         border-bottom: none !important;
         position: relative;
-        padding-left: 120px !important;
+        padding-left: 100px !important;
+        font-size: 12px;
     }
     
     .data-table td:before {
         content: attr(data-label);
         position: absolute;
         left: 0;
-        width: 110px;
+        width: 90px;
         font-weight: 600;
         color: #667eea;
-        font-size: 12px;
+        font-size: 10px;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.3px;
     }
     
     .data-table td:last-child {
@@ -645,90 +644,189 @@ header h1 {
     .status-good,
     .status-low {
         display: inline-block;
-        margin-top: 5px;
+        margin-top: 3px;
+        font-size: 10px;
+        padding: 3px 8px;
     }
     
     .search-container {
         flex-direction: column;
-        gap: 10px;
+        gap: 8px;
     }
     
     .search-input {
         width: 100%;
+        font-size: 13px;
+        padding: 8px 12px;
     }
     
     .search-btn {
         width: 100%;
+        font-size: 13px;
+        padding: 8px;
     }
     
     .form-container {
-        padding: 15px;
+        padding: 12px;
     }
     
     .form-group {
-        margin-bottom: 15px;
+        margin-bottom: 12px;
     }
     
     .form-group label {
+        font-size: 12px;
+        margin-bottom: 5px;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 13px;
+        padding: 10px 15px;
+    }
+    
+    .form-buttons {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .form-buttons button {
+        width: 100%;
+        font-size: 13px;
+        padding: 10px;
+    }
+    
+    .history-list {
+        padding: 8px;
+    }
+    
+    .history-item {
+        padding: 10px;
+        margin-bottom: 8px;
+    }
+    
+    .history-info {
+        flex-direction: column;
+        gap: 6px;
+        align-items: flex-start;
+    }
+    
+    .movement-type {
+        font-size: 10px;
+        padding: 3px 6px;
+    }
+    
+    .material-name {
+        font-size: 12px;
+    }
+    
+    .quantity {
+        font-size: 12px;
+    }
+    
+    .date {
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-content {
+        padding: 0 5px;
+        margin: 5px auto;
+    }
+    
+    .stat-card {
+        padding: 12px 8px;
+    }
+    
+    .stat-number {
+        font-size: 20px;
+    }
+    
+    .table-section {
+        padding: 8px;
+    }
+    
+    .data-table td {
+        padding-left: 80px !important;
+        font-size: 11px;
+        padding: 4px 0 !important;
+    }
+    
+    .data-table td:before {
+        width: 70px;
+        font-size: 9px;
+    }
+    
+    .data-table tr {
+        padding: 8px;
+        margin-bottom: 8px;
+    }
+    
+    .status-good,
+    .status-low {
+        font-size: 9px;
+        padding: 2px 6px;
+    }
+    
+    .btn-small {
+        font-size: 11px;
+        padding: 5px 6px;
+        min-width: 30px;
+        height: 30px;
+    }
+    
+    .modal-content {
+        padding: 12px;
+        margin: 2% auto;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+    
+    .modal-content h2 {
+        font-size: 18px;
+        margin-bottom: 15px;
+    }
+    
+    .section-header h2 {
         font-size: 14px;
     }
     
     .form-group input,
     .form-group select,
     .form-group textarea {
-        font-size: 14px;
+        padding: 8px 12px;
+        font-size: 12px;
     }
     
-    .form-buttons {
-        flex-direction: column;
-        gap: 10px;
-    }
-    
-    .form-buttons button {
-        width: 100%;
-    }
-    
-    .history-list {
-        padding: 10px;
+    .form-group label {
+        font-size: 11px;
     }
     
     .history-item {
-        padding: 12px;
-        margin-bottom: 10px;
-    }
-}
-
-@media (max-width: 480px) {
-    .page-content {
-        padding: 0 8px;
+        padding: 8px;
+        margin-bottom: 6px;
     }
     
-    .stat-card {
-        padding: 15px 10px;
+    .history-info {
+        gap: 4px;
     }
     
-    .stat-number {
-        font-size: 24px;
+    .movement-type {
+        font-size: 9px;
+        padding: 2px 4px;
     }
     
-    .table-section {
-        padding: 10px;
+    .material-name {
+        font-size: 11px;
     }
     
-    .data-table td {
-        padding-left: 70px;
-        font-size: 13px;
+    .quantity {
+        font-size: 11px;
     }
     
-    .btn-small {
-        font-size: 12px;
-        padding: 6px 8px;
-        min-width: 35px;
-        height: 35px;
-    }
-    
-    .modal-content {
-        padding: 15px;
-        margin: 2% auto;
+    .date {
+        font-size: 10px;
     }
 }

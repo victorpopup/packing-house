@@ -215,59 +215,60 @@ body {
 
 @media (max-width: 480px) {
     .page-content {
-        padding: 10px;
+        padding: 8px 5px;
+        margin: 5px auto;
     }
     
     .welcome-section {
-        padding: 20px 15px;
-        margin-bottom: 20px;
+        padding: 15px 10px;
+        margin-bottom: 15px;
     }
     
     .welcome-section h2 {
-        font-size: 1.8rem;
+        font-size: 1.5rem;
     }
     
     .welcome-section p {
-        font-size: 0.9rem;
-    }
-    
-    .quick-actions {
-        gap: 15px;
-    }
-    
-    .action-card {
-        padding: 15px;
-    }
-    
-    .action-icon {
-        font-size: 2rem;
-    }
-    
-    .action-title {
-        font-size: 1.2rem;
-    }
-    
-    .action-description {
         font-size: 0.85rem;
     }
     
-    .stats-summary {
-        padding: 20px 15px;
+    .quick-actions {
+        gap: 12px;
     }
     
-    .stats-grid {
-        gap: 15px;
+    .action-card {
+        padding: 12px;
     }
     
-    .stat-item {
-        padding: 20px 15px;
-    }
-    
-    .stat-number {
+    .action-icon {
         font-size: 1.8rem;
     }
     
+    .action-title {
+        font-size: 1.1rem;
+    }
+    
+    .action-description {
+        font-size: 0.8rem;
+    }
+    
+    .stats-summary {
+        padding: 15px 10px;
+    }
+    
+    .stats-grid {
+        gap: 12px;
+    }
+    
+    .stat-item {
+        padding: 15px 10px;
+    }
+    
+    .stat-number {
+        font-size: 1.6rem;
+    }
+    
     .stat-label {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
     }
 }
