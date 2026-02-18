@@ -44,6 +44,20 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize material filter with existing materials
     updateMaterialFilter();
     
+    // Add search functionality
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        // Real-time search as user types
+        searchInput.addEventListener('input', searchMaterials);
+        
+        // Search on Enter key
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchMaterials();
+            }
+        });
+    }
+    
     // Edit material form
     const editMaterialForm = document.querySelector('#editMaterialModal .material-form');
     if (editMaterialForm) {
@@ -380,6 +394,41 @@ function clearFilters() {
     const existingMessage = document.querySelector('.no-results-message');
     if (existingMessage) {
         existingMessage.remove();
+    }
+}
+
+function searchMaterials() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+    const table = document.querySelector('.data-table tbody');
+    const rows = table.getElementsByTagName('tr');
+    let visibleCount = 0;
+    
+    for (let row of rows) {
+        const materialName = row.cells[0].textContent.toLowerCase();
+        
+        if (searchTerm === '' || materialName.includes(searchTerm)) {
+            row.style.display = '';
+            visibleCount++;
+        } else {
+            row.style.display = 'none';
+        }
+    }
+    
+    // Show message if no results
+    const existingMessage = document.querySelector('.no-search-results');
+    if (existingMessage) {
+        existingMessage.remove();
+    }
+    
+    if (visibleCount === 0 && searchTerm !== '') {
+        const noResultsMsg = document.createElement('tr');
+        noResultsMsg.className = 'no-search-results';
+        noResultsMsg.innerHTML = `
+            <td colspan="5" style="text-align: center; padding: 40px; color: #a8a8a8; font-style: italic;">
+                Nenhum material encontrado para "${document.getElementById('searchInput').value}"
+            </td>
+        `;
+        table.appendChild(noResultsMsg);
     }
 }
 
