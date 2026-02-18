@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const typeFilter = document.getElementById('filterType');
     
     if (materialFilter) {
-        materialFilter.addEventListener('input', filterHistory);
+        materialFilter.addEventListener('change', filterHistory);
     }
     if (dateFilter) {
         dateFilter.addEventListener('change', filterHistory);
@@ -36,6 +36,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (typeFilter) {
         typeFilter.addEventListener('change', filterHistory);
     }
+    
+    // Initialize material filter with existing materials
+    updateMaterialFilter();
     
     // Material form
     const materialForm = document.querySelector('.material-form');
@@ -102,6 +105,37 @@ function addMaterialToTable(nome, quantidade, unidade) {
         <td data-label="Status"><span class="${statusClass}">${status}</span></td>
         <td data-label="Ações"><button class="btn-delete" onclick="deleteMaterial(this)">Excluir</button></td>
     `;
+    
+    // Update material filter dropdown
+    updateMaterialFilter();
+}
+
+function updateMaterialFilter() {
+    const filterSelect = document.getElementById('filterMaterial');
+    if (!filterSelect) return;
+    
+    // Get all materials from table
+    const table = document.querySelector('.data-table tbody');
+    const rows = table.getElementsByTagName('tr');
+    const materials = new Set();
+    
+    for (let row of rows) {
+        const materialName = row.cells[0].textContent;
+        materials.add(materialName);
+    }
+    
+    // Clear existing options (except "Todos os materiais")
+    while (filterSelect.children.length > 1) {
+        filterSelect.removeChild(filterSelect.lastChild);
+    }
+    
+    // Add sorted material options
+    Array.from(materials).sort().forEach(material => {
+        const option = document.createElement('option');
+        option.value = material;
+        option.textContent = material;
+        filterSelect.appendChild(option);
+    });
 }
 
 function addMovementToHistory(material, type, quantity, unit, date, reason) {
@@ -208,13 +242,14 @@ function deleteMaterial(button) {
         setTimeout(() => {
             row.remove();
             updateStats();
+            updateMaterialFilter();
             showSuccessMessage(`Material "${materialName}" excluído com sucesso!`);
         }, 300);
     }
 }
 
 function filterHistory() {
-    const materialFilter = document.getElementById('filterMaterial').value.toLowerCase();
+    const materialFilter = document.getElementById('filterMaterial').value;
     const dateFilter = document.getElementById('filterDate').value;
     const typeFilter = document.getElementById('filterType').value;
     
@@ -222,7 +257,7 @@ function filterHistory() {
     let visibleCount = 0;
     
     historyItems.forEach(item => {
-        const materialName = item.querySelector('.material-name').textContent.toLowerCase();
+        const materialName = item.querySelector('.material-name').textContent;
         const dateText = item.querySelector('.date').textContent;
         const movementType = item.querySelector('.movement-type').textContent.toLowerCase();
         
@@ -231,7 +266,7 @@ function filterHistory() {
         const [day, month, year] = itemDate.split('/');
         const formattedItemDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
         
-        let matchesMaterial = !materialFilter || materialName.includes(materialFilter);
+        let matchesMaterial = !materialFilter || materialName === materialFilter;
         let matchesDate = !dateFilter || formattedItemDate === dateFilter;
         let matchesType = !typeFilter || movementType.includes(typeFilter);
         
