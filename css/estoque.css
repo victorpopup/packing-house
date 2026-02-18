@@ -384,6 +384,90 @@ header h1 {
     display: none;
 }
 
+/* Layout em Grid para Cards de Histórico */
+.history-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.history-card {
+    background: rgba(20, 20, 35, 0.95);
+    border: 1px solid rgba(102, 126, 234, 0.2);
+    border-radius: 12px;
+    padding: 15px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.history-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
+    border-color: rgba(102, 126, 234, 0.4);
+}
+
+.history-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+}
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.history-content {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.history-content .material-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #e8e8e8;
+    margin: 0;
+}
+
+.history-content .quantity {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.history-content .quantity.entrada {
+    color: #28a745;
+}
+
+.history-content .quantity.saida {
+    color: #dc3545;
+}
+
+.history-card .date {
+    font-size: 12px;
+    color: #a8a8a8;
+    opacity: 0.8;
+}
+
+.history-card .movement-type {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
 .status-good {
     background: linear-gradient(135deg, #28a745, #20c997);
     color: white;
@@ -719,6 +803,33 @@ header h1 {
     .material-actions .btn-delete {
         padding: 5px 8px;
         font-size: 10px;
+    }
+    
+    /* Cards de histórico responsivos */
+    .history-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .history-card {
+        padding: 12px;
+    }
+    
+    .history-content .material-name {
+        font-size: 14px;
+    }
+    
+    .history-content .quantity {
+        font-size: 16px;
+    }
+    
+    .history-card .date {
+        font-size: 10px;
+    }
+    
+    .history-card .movement-type {
+        font-size: 9px;
+        padding: 3px 6px;
     }
     
     .search-container {

@@ -202,6 +202,7 @@ function updateMaterialFilter() {
 }
 
 function addMovementToHistory(material, type, quantity, unit, date) {
+    // Adicionar à lista original para compatibilidade
     const historyContainer = document.querySelector('.history-ol');
     const newItem = document.createElement('div');
     newItem.className = 'history-item';
@@ -219,16 +220,35 @@ function addMovementToHistory(material, type, quantity, unit, date) {
         </div>
     `;
     
-    // Add to beginning of history
+    // Add to beginning of history list
     historyContainer.insertBefore(newItem, historyContainer.firstChild);
     
+    // Adicionar ao grid de cards visível
+    const historyGrid = document.getElementById('historyGrid');
+    const newCard = document.createElement('div');
+    newCard.className = 'history-card';
+    
+    newCard.innerHTML = `
+        <div class="history-header">
+            <span class="movement-type ${type}">${type.toUpperCase()}</span>
+            <span class="date">${formattedDate}</span>
+        </div>
+        <div class="history-content">
+            <h4 class="material-name">${material}</h4>
+            <p class="quantity ${type}">${type === 'entrada' ? '+' : '-'}${quantity} ${unit}</p>
+        </div>
+    `;
+    
+    // Add to beginning of history grid
+    historyGrid.insertBefore(newCard, historyGrid.firstChild);
+    
     // Add animation
-    newItem.style.opacity = '0';
-    newItem.style.transform = 'translateY(-20px)';
+    newCard.style.opacity = '0';
+    newCard.style.transform = 'translateY(-20px)';
     setTimeout(() => {
-        newItem.style.transition = 'all 0.3s ease';
-        newItem.style.opacity = '1';
-        newItem.style.transform = 'translateY(0)';
+        newCard.style.transition = 'all 0.3s ease';
+        newCard.style.opacity = '1';
+        newCard.style.transform = 'translateY(0)';
     }, 100);
 }
 
@@ -408,9 +428,58 @@ function filterHistory() {
     const dateFilter = document.getElementById('filterDate').value;
     const typeFilter = document.getElementById('filterType').value;
     
-    const historyItems = document.querySelectorAll('.history-item');
+    // Filtrar cards visíveis
+    const historyGrid = document.getElementById('historyGrid');
+    const cards = historyGrid.getElementsByClassName('history-card');
     let visibleCount = 0;
     
+    for (let card of cards) {
+        const materialName = card.querySelector('.material-name').textContent;
+        const dateText = card.querySelector('.date').textContent;
+        const movementType = card.querySelector('.movement-type').textContent.toLowerCase();
+        
+        // Parse date from format "DD/MM/YYYY HH:mm" to compare with date filter
+        const itemDate = dateText.split(' ')[0];
+        const [day, month, year] = itemDate.split('/');
+        const formattedItemDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+        
+        let matchesMaterial = !materialFilter || materialName === materialFilter;
+        let matchesDate = !dateFilter || formattedItemDate === dateFilter;
+        let matchesType = !typeFilter || movementType.includes(typeFilter);
+        
+        if (matchesMaterial && matchesDate && matchesType) {
+            card.style.display = '';
+            visibleCount++;
+        } else {
+            card.style.display = 'none';
+        }
+    }
+    
+    // Show message if no results
+    const existingMessage = document.querySelector('.no-history-results');
+    if (existingMessage) {
+        existingMessage.remove();
+    }
+    
+    if (visibleCount === 0) {
+        const noResultsMsg = document.createElement('div');
+        noResultsMsg.className = 'no-history-results';
+        noResultsMsg.style.cssText = `
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px;
+            color: #a8a8a8;
+            font-style: italic;
+            background: rgba(20, 20, 35, 0.95);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 12px;
+        `;
+        noResultsMsg.textContent = 'Nenhuma movimentação encontrada para os filtros selecionados.';
+        historyGrid.appendChild(noResultsMsg);
+    }
+    
+    // Manter compatibilidade com lista original (escondida)
+    const historyItems = document.querySelectorAll('.history-item');
     historyItems.forEach(item => {
         const materialName = item.querySelector('.material-name').textContent;
         const dateText = item.querySelector('.date').textContent;
@@ -427,32 +496,10 @@ function filterHistory() {
         
         if (matchesMaterial && matchesDate && matchesType) {
             item.style.display = 'block';
-            visibleCount++;
         } else {
             item.style.display = 'none';
         }
     });
-    
-    // Show message if no results
-    const historyContainer = document.querySelector('.history-ol');
-    const existingMessage = document.querySelector('.no-results-message');
-    
-    if (existingMessage) {
-        existingMessage.remove();
-    }
-    
-    if (visibleCount === 0) {
-        const noResultsMsg = document.createElement('div');
-        noResultsMsg.className = 'no-results-message';
-        noResultsMsg.style.cssText = `
-            text-align: center;
-            padding: 40px;
-            color: #a8a8a8;
-            font-style: italic;
-        `;
-        noResultsMsg.textContent = 'Nenhuma movimentação encontrada para os filtros selecionados.';
-        historyContainer.appendChild(noResultsMsg);
-    }
 }
 
 function clearFilters() {
@@ -460,15 +507,28 @@ function clearFilters() {
     document.getElementById('filterDate').value = '';
     document.getElementById('filterType').value = '';
     
+    // Limpar cards visíveis
+    const cards = document.querySelectorAll('.history-card');
+    cards.forEach(card => {
+        card.style.display = '';
+    });
+    
+    // Remover mensagem de nenhum resultado se existir
+    const existingMessage = document.querySelector('.no-history-results');
+    if (existingMessage) {
+        existingMessage.remove();
+    }
+    
+    // Manter compatibilidade com lista original (escondida)
     const historyItems = document.querySelectorAll('.history-item');
     historyItems.forEach(item => {
         item.style.display = 'block';
     });
     
-    // Remove no results message if exists
-    const existingMessage = document.querySelector('.no-results-message');
-    if (existingMessage) {
-        existingMessage.remove();
+    // Remover mensagem antiga se existir
+    const oldMessage = document.querySelector('.no-results-message');
+    if (oldMessage) {
+        oldMessage.remove();
     }
 }
 
