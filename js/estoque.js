@@ -473,6 +473,12 @@ function clearFilters() {
     document.getElementById('filterType').value = '';
     
     renderMovements();
+    
+    // Remover mensagem de nenhum resultado se existir
+    const existingMessage = document.querySelector('.no-history-results');
+    if (existingMessage) {
+        existingMessage.remove();
+    }
 }
 
 // Alternar visibilidade do histórico

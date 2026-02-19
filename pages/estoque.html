@@ -225,6 +225,10 @@
         
 
         <div class="search-section">
+            <select id="filterMaterial" class="search-input" onchange="filterHistory()">
+                <option value="">Todos os materiais</option>
+                <!-- Materiais serão carregados dinamicamente do banco de dados -->
+            </select>
 
             <input type="date" id="filterDate" class="search-input" onchange="filterHistory()">
 
