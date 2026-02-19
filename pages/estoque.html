@@ -373,7 +373,7 @@
         
 
         <div class="search-section">
-            <select id="filterMaterial" class="search-input">
+            <select id="filterMaterial" class="search-input" onchange="filterHistory()">
                 <option value="">Todos os materiais</option>
                 <option value="Caixa Roxa">Caixa Roxa</option>
                 <option value="Bolsão">Bolsão</option>
@@ -381,15 +381,14 @@
                 <option value="Strado">Strado</option>
             </select>
 
-            <input type="date" id="filterDate" class="search-input">
+            <input type="date" id="filterDate" class="search-input" onchange="filterHistory()">
 
-            <select id="filterType" class="search-input">
+            <select id="filterType" class="search-input" onchange="filterHistory()">
                 <option value="">Todos os tipos</option>
                 <option value="entrada">Entrada</option>
                 <option value="saida">Saída</option>
             </select>
 
-            <button class="btn-primary" onclick="filterHistory()">Filtrar</button>
             <button class="btn-secondary" onclick="clearFilters()">Limpar</button>
         </div>
 
