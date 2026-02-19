@@ -802,6 +802,75 @@ header h1 {
     background: rgba(255, 255, 255, 0.2);
 }
 
+/* Campo de Autocomplete de Material */
+.material-input-container {
+    position: relative;
+}
+
+.material-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgba(30, 30, 50, 0.98);
+    border: 2px solid rgba(102, 126, 234, 0.3);
+    border-radius: 12px;
+    margin-top: 5px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    display: none;
+}
+
+.material-suggestions.show {
+    display: block;
+}
+
+.material-suggestion-item {
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.material-suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.material-suggestion-item:hover {
+    background: rgba(102, 126, 234, 0.1);
+    transform: translateX(5px);
+}
+
+.material-suggestion-item.selected {
+    background: rgba(102, 126, 234, 0.2);
+}
+
+.material-suggestion-name {
+    font-weight: 600;
+    color: #e8e8e8;
+    font-size: 14px;
+}
+
+.material-suggestion-quantity {
+    font-size: 12px;
+    color: #667eea;
+    font-weight: 700;
+}
+
+.material-suggestion-no-results {
+    padding: 15px 20px;
+    color: #a8a8a8;
+    font-style: italic;
+    text-align: center;
+    font-size: 13px;
+}
+
 /* Botões de Filtro de Tipo */
 .filter-type-buttons {
     display: flex;
@@ -915,6 +984,18 @@ header h1 {
         font-size: 12px;
         width: 16px;
         height: 16px;
+    }
+    
+    .material-suggestion-item {
+        padding: 10px 15px;
+    }
+    
+    .material-suggestion-name {
+        font-size: 13px;
+    }
+    
+    .material-suggestion-quantity {
+        font-size: 11px;
     }
 }
 @media (max-width: 768px) {

@@ -152,15 +152,15 @@
 
                 <div class="form-group">
 
-                    <label for="materialSelect">Material</label>
+                    <label for="materialInput">Material</label>
 
-                    <select id="materialSelect" required>
+                    <div class="material-input-container">
 
-                        <option value="">Selecione um material</option>
+                        <input type="text" id="materialInput" placeholder="Digite o nome do material..." required autocomplete="off">
 
-                        <!-- Materiais serão carregados dinamicamente do banco de dados -->
+                        <div class="material-suggestions" id="materialSuggestions"></div>
 
-                    </select>
+                    </div>
 
                 </div>
 

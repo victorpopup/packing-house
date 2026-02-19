@@ -4,6 +4,8 @@
 let materials = [];
 let movements = [];
 let currentEditingMaterial = null;
+let selectedMaterial = null;
+let suggestionIndex = -1;
 
 // Modal functions
 function showAddMaterialModal() {
@@ -59,7 +61,6 @@ async function loadAllData() {
     ]);
     
     // Atualizar filtros após carregar os dados
-    updateMaterialFilter();
     updateHistoryMaterialFilter();
 }
 
@@ -332,6 +333,94 @@ async function addMovement(materialName, type, quantity, date) {
     }
 }
 
+// === FUNÇÕES DE AUTOCOMPLETE ===
+
+// Filtrar materiais para autocomplete
+function filterMaterialsForAutocomplete(searchTerm) {
+    if (!searchTerm || searchTerm.length < 2) {
+        return [];
+    }
+    
+    return materials.filter(material => 
+        material.name.toLowerCase().includes(searchTerm.toLowerCase())
+    ).slice(0, 5); // Limitar a 5 resultados
+}
+
+// Mostrar sugestões de autocomplete
+function showMaterialSuggestions(suggestions) {
+    const suggestionsContainer = document.getElementById('materialSuggestions');
+    
+    if (suggestions.length === 0) {
+        suggestionsContainer.innerHTML = '<div class="material-suggestion-no-results">Nenhum material encontrado</div>';
+        suggestionsContainer.classList.add('show');
+        return;
+    }
+    
+    suggestionsContainer.innerHTML = suggestions.map((material, index) => `
+        <div class="material-suggestion-item" data-material-name="${material.name}" data-index="${index}">
+            <span class="material-suggestion-name">${material.name}</span>
+            <span class="material-suggestion-quantity">${material.quantity} ${material.unit}</span>
+        </div>
+    `).join('');
+    
+    suggestionsContainer.classList.add('show');
+    
+    // Adicionar event listeners aos itens
+    suggestionsContainer.querySelectorAll('.material-suggestion-item').forEach(item => {
+        item.addEventListener('click', function() {
+            selectMaterial(this.dataset.materialName);
+        });
+    });
+}
+
+// Selecionar material
+function selectMaterial(materialName) {
+    const materialInput = document.getElementById('materialInput');
+    const suggestionsContainer = document.getElementById('materialSuggestions');
+    
+    materialInput.value = materialName;
+    selectedMaterial = materialName;
+    suggestionsContainer.classList.remove('show');
+    suggestionIndex = -1;
+    
+    // Limpar seleção anterior
+    suggestionsContainer.querySelectorAll('.material-suggestion-item').forEach(item => {
+        item.classList.remove('selected');
+    });
+}
+
+// Esconder sugestões
+function hideMaterialSuggestions() {
+    const suggestionsContainer = document.getElementById('materialSuggestions');
+    setTimeout(() => {
+        suggestionsContainer.classList.remove('show');
+    }, 200); // Pequeno delay para permitir clique nos itens
+}
+
+// Navegar pelas sugestões com teclado
+function navigateSuggestions(direction) {
+    const suggestionsContainer = document.getElementById('materialSuggestions');
+    const items = suggestionsContainer.querySelectorAll('.material-suggestion-item');
+    
+    if (items.length === 0) return;
+    
+    // Remover seleção anterior
+    if (suggestionIndex >= 0 && suggestionIndex < items.length) {
+        items[suggestionIndex].classList.remove('selected');
+    }
+    
+    // Calcular novo índice
+    if (direction === 'down') {
+        suggestionIndex = suggestionIndex < items.length - 1 ? suggestionIndex + 1 : 0;
+    } else if (direction === 'up') {
+        suggestionIndex = suggestionIndex > 0 ? suggestionIndex - 1 : items.length - 1;
+    }
+    
+    // Adicionar seleção ao novo item
+    items[suggestionIndex].classList.add('selected');
+    items[suggestionIndex].scrollIntoView({ block: 'nearest' });
+}
+
 // === FUNÇÕES DE INTERFACE ===
 
 // Resetar botões de tipo de movimentação
@@ -340,25 +429,6 @@ function resetMovementTypeButtons() {
     if (checkedRadio) {
         checkedRadio.checked = false;
     }
-}
-
-// Atualizar filtro de materiais
-function updateMaterialFilter() {
-    const filterSelect = document.getElementById('materialSelect');
-    if (!filterSelect) return;
-    
-    // Limpar opções existentes (exceto "Selecione um material")
-    while (filterSelect.children.length > 1) {
-        filterSelect.removeChild(filterSelect.lastChild);
-    }
-    
-    // Adicionar opções de materiais
-    materials.sort((a, b) => a.name.localeCompare(b.name)).forEach(material => {
-        const option = document.createElement('option');
-        option.value = material.name;
-        option.textContent = material.name;
-        filterSelect.appendChild(option);
-    });
 }
 
 // Atualizar filtro de materiais para histórico
@@ -657,7 +727,7 @@ function setupEventListeners() {
         movementForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const material = document.getElementById('materialSelect').value;
+            const material = document.getElementById('materialInput').value.trim();
             const type = document.querySelector('input[name="movementType"]:checked').value;
             const quantity = document.getElementById('movementQuantity').value;
             const date = document.getElementById('movementDate').value;
@@ -666,6 +736,7 @@ function setupEventListeners() {
             
             movementForm.reset();
             resetMovementTypeButtons();
+            selectedMaterial = null;
             if (dateInput) {
                 dateInput.value = new Date().toISOString().split('T')[0];
             }
@@ -682,6 +753,44 @@ function setupEventListeners() {
     if (typeFilterRadios.length > 0) {
         typeFilterRadios.forEach(radio => {
             radio.addEventListener('change', filterHistory);
+        });
+    }
+    
+    // Autocomplete listeners
+    const materialInput = document.getElementById('materialInput');
+    if (materialInput) {
+        materialInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.trim();
+            const suggestions = filterMaterialsForAutocomplete(searchTerm);
+            showMaterialSuggestions(suggestions);
+        });
+        
+        materialInput.addEventListener('keydown', function(e) {
+            const suggestionsContainer = document.getElementById('materialSuggestions');
+            
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                navigateSuggestions('down');
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                navigateSuggestions('up');
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                const selectedItem = suggestionsContainer.querySelector('.material-suggestion-item.selected');
+                if (selectedItem) {
+                    selectMaterial(selectedItem.dataset.materialName);
+                }
+            } else if (e.key === 'Escape') {
+                hideMaterialSuggestions();
+            }
+        });
+        
+        materialInput.addEventListener('blur', hideMaterialSuggestions);
+        
+        // Prevenir que o clique nas sugestões feche o autocomplete
+        const suggestionsContainer = document.getElementById('materialSuggestions');
+        suggestionsContainer.addEventListener('mousedown', function(e) {
+            e.preventDefault();
         });
     }
 }
