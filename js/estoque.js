@@ -251,7 +251,6 @@ async function editMaterial(id) {
         // Preencher formulário
         document.getElementById('editMaterialNome').value = material.name;
         document.getElementById('editMaterialQuantidade').value = material.quantity;
-        document.getElementById('editMaterialUnidade').value = material.unit;
         
         // Mostrar modal
         showEditMaterialModal();
