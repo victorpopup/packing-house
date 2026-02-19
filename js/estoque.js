@@ -260,6 +260,21 @@ async function editMaterial(id) {
 // Atualizar material
 async function updateMaterial(id, nome, quantidade) {
     try {
+        // Buscar material atual para mostrar na confirmação
+        const currentMaterial = await window.packingHouseDB.getMaterial(id);
+        if (!currentMaterial) {
+            showError('Material não encontrado');
+            return;
+        }
+        
+        const details = `� <strong>Nome atual:</strong> ${currentMaterial.name}<br>📊 <strong>Quantidade atual:</strong> ${currentMaterial.quantity} ${currentMaterial.unit}<br><br>📝 <strong>Novo nome:</strong> ${nome}<br>📊 <strong>Nova quantidade:</strong> ${quantidade} unidade`;
+        
+        const confirmed = await window.showEditConfirmation(currentMaterial.name, details);
+        
+        if (!confirmed) {
+            return;
+        }
+        
         const updates = {
             name: nome,
             quantity: parseInt(quantidade),
@@ -288,7 +303,11 @@ async function deleteMaterial(id) {
             return;
         }
         
-        if (!confirm(`Tem certeza que deseja excluir o material "${material.name}"?`)) {
+        const details = `📦 <strong>Nome:</strong> ${material.name}<br>📊 <strong>Quantidade atual:</strong> ${material.quantity} ${material.unit}<br><br>Esta ação <strong>NÃO PODERÁ</strong> ser desfeita!`;
+        
+        const confirmed = await window.showDeleteConfirmation(material.name, details);
+        
+        if (!confirmed) {
             return;
         }
         

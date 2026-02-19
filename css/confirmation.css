@@ -1,0 +1,226 @@
+/* Janelas de Confirmação Bonitas - Packing House */
+
+/* Overlay escuro */
+.confirmation-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: rgba(0, 0, 0, 0.7) !important;
+    z-index: 10000 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transition: all 0.3s ease !important;
+    backdrop-filter: blur(5px) !important;
+}
+
+.confirmation-overlay.active {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Container da confirmação */
+.confirmation-modal {
+    background: linear-gradient(135deg, #ffffff, #f8f9fa) !important;
+    border-radius: 20px !important;
+    padding: 30px !important;
+    max-width: 450px !important;
+    width: 90% !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3) !important;
+    transform: scale(0.8) translateY(20px) !important;
+    transition: all 0.3s ease !important;
+    border: 1px solid rgba(102, 126, 234, 0.1) !important;
+    position: relative !important;
+}
+
+.confirmation-overlay.active .confirmation-modal {
+    transform: scale(1) translateY(0) !important;
+}
+
+/* Header */
+.confirmation-header {
+    display: flex !important;
+    align-items: center !important;
+    margin-bottom: 20px !important;
+    padding-bottom: 15px !important;
+    border-bottom: 2px solid rgba(102, 126, 234, 0.1) !important;
+}
+
+.confirmation-icon {
+    font-size: 32px !important;
+    margin-right: 15px !important;
+}
+
+.confirmation-title {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    color: #2d3748 !important;
+    margin: 0 !important;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+}
+
+/* Conteúdo */
+.confirmation-content {
+    margin-bottom: 25px !important;
+    color: #4a5568 !important;
+    line-height: 1.6 !important;
+    font-size: 15px !important;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+}
+
+.confirmation-details {
+    background: rgba(102, 126, 234, 0.05) !important;
+    border-left: 4px solid #667eea !important;
+    padding: 15px !important;
+    margin: 15px 0 !important;
+    border-radius: 8px !important;
+}
+
+.confirmation-details strong {
+    color: #2d3748 !important;
+    display: block !important;
+    margin-bottom: 5px !important;
+}
+
+/* Botões */
+.confirmation-buttons {
+    display: flex !important;
+    gap: 12px !important;
+    justify-content: flex-end !important;
+    margin-top: 25px !important;
+}
+
+.confirmation-btn {
+    padding: 12px 24px !important;
+    border: none !important;
+    border-radius: 10px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    min-width: 100px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+
+.confirmation-btn-confirm {
+    background: linear-gradient(135deg, #667eea, #764ba2) !important;
+    color: white !important;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3) !important;
+}
+
+.confirmation-btn-confirm:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4) !important;
+    background: linear-gradient(135deg, #5a6fd8, #6a4190) !important;
+}
+
+.confirmation-btn-cancel {
+    background: #e2e8f0 !important;
+    color: #4a5568 !important;
+    border: 1px solid #cbd5e0 !important;
+}
+
+.confirmation-btn-cancel:hover {
+    background: #cbd5e0 !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Tipos de confirmação */
+.confirmation-danger .confirmation-icon {
+    color: #e53e3e !important;
+}
+
+.confirmation-danger .confirmation-title {
+    color: #e53e3e !important;
+}
+
+.confirmation-danger .confirmation-details {
+    border-left-color: #e53e3e !important;
+    background: rgba(229, 62, 62, 0.05) !important;
+}
+
+.confirmation-warning .confirmation-icon {
+    color: #dd6b20 !important;
+}
+
+.confirmation-warning .confirmation-title {
+    color: #dd6b20 !important;
+}
+
+.confirmation-warning .confirmation-details {
+    border-left-color: #dd6b20 !important;
+    background: rgba(221, 107, 32, 0.05) !important;
+}
+
+.confirmation-info .confirmation-icon {
+    color: #3182ce !important;
+}
+
+.confirmation-info .confirmation-title {
+    color: #3182ce !important;
+}
+
+.confirmation-info .confirmation-details {
+    border-left-color: #3182ce !important;
+    background: rgba(49, 130, 206, 0.05) !important;
+}
+
+/* Responsividade */
+@media (max-width: 480px) {
+    .confirmation-modal {
+        margin: 20px !important;
+        padding: 20px !important;
+        max-width: calc(100% - 40px) !important;
+    }
+    
+    .confirmation-title {
+        font-size: 18px !important;
+    }
+    
+    .confirmation-content {
+        font-size: 14px !important;
+    }
+    
+    .confirmation-buttons {
+        flex-direction: column !important;
+    }
+    
+    .confirmation-btn {
+        width: 100% !important;
+    }
+}
+
+/* Animações */
+@keyframes slideIn {
+    from {
+        transform: scale(0.8) translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.confirmation-overlay.active {
+    animation: fadeIn 0.3s ease;
+}
+
+.confirmation-overlay.active .confirmation-modal {
+    animation: slideIn 0.3s ease;
+}
