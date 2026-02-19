@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Packing House - Produção</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/header.css">
+    <link rel="stylesheet" href="../css/menu.css">
+    <link rel="stylesheet" href="../css/producao.css">
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <picture>
+                <source media="(max-width: 768px)" srcset="../image/logo.mobile.svg">
+                <source media="(min-width: 769px)" srcset="../image/logo.desktop.svg">
+                <img src="../image/logo.desktop.svg" alt="Packing House" class="logo-img">
+            </picture>
+            <h1 class="logo-text">Packing House</h1>
+        </div>
+    </header>
+
+    <main class="page-content">
+        <div class="page-header">
+            <h2>Controle de Produção</h2>
+            <p>Registre e acompanhe a produção diária</p>
+        </div>
+
+        <!-- Filtros -->
+        <section class="filters-section">
+            <div class="filter-container">
+                <div class="filter-group">
+                    <label for="dataFiltro">Data:</label>
+                    <input type="date" id="dataFiltro" class="filter-input">
+                </div>
+                <div class="filter-group">
+                    <label for="marcaFiltro">Marca:</label>
+                    <select id="marcaFiltro" class="filter-input">
+                        <option value="">Todas as marcas</option>
+                    </select>
+                </div>
+                <button id="btnFiltrar" class="btn btn-primary">Filtrar</button>
+                <button id="btnLimparFiltro" class="btn btn-secondary">Limpar</button>
+            </div>
+        </section>
+
+        <!-- Registro de Produção -->
+        <section class="production-form-section">
+            <h3>Registrar Produção</h3>
+            <form id="formProducao" class="production-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="dataProducao">Data:</label>
+                        <input type="date" id="dataProducao" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="marcaProducao">Marca:</label>
+                        <select id="marcaProducao" required>
+                            <option value="">Selecione uma marca</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="quantidadeCaixas">Quantidade de Caixas:</label>
+                        <input type="number" id="quantidadeCaixas" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="pesoCaixa">Peso por Caixa (kg):</label>
+                        <input type="number" id="pesoCaixa" step="0.1" min="0" readonly>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="pesoTotal">Peso Total (kg):</label>
+                        <input type="number" id="pesoTotal" step="0.1" min="0" readonly>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Registrar Produção</button>
+                    <button type="reset" class="btn btn-secondary">Limpar</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Lista de Produção -->
+        <section class="production-list-section">
+            <div class="section-header">
+                <h3>Registros de Produção</h3>
+                <div class="summary-info">
+                    <span id="totalCaixas">0 caixas</span>
+                    <span id="totalPeso">0 kg</span>
+                </div>
+            </div>
+            <div class="table-container">
+                <table class="production-table">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Marca</th>
+                            <th>Qtd. Caixas</th>
+                            <th>Peso/Box (kg)</th>
+                            <th>Peso Total (kg)</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productionTableBody">
+                        <!-- Registros serão inseridos aqui -->
+                    </tbody>
+                </table>
+                <div id="emptyState" class="empty-state">
+                    <p>Nenhum registro de produção encontrado</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal de Cadastro/Edição de Marcas -->
+    <div id="modalMarcas" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Gerenciar Marcas</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="formMarca" class="marca-form">
+                    <div class="form-group">
+                        <label for="nomeMarca">Nome da Marca:</label>
+                        <input type="text" id="nomeMarca" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="pesoMarca">Peso por Caixa (kg):</label>
+                        <input type="number" id="pesoMarca" step="0.1" min="0" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                        <button type="button" id="btnCancelarMarca" class="btn btn-secondary">Cancelar</button>
+                    </div>
+                </form>
+                
+                <div class="marcas-list">
+                    <h4>Marcas Cadastradas</h4>
+                    <div id="marcasContainer" class="marcas-container">
+                        <!-- Marcas serão listadas aqui -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botão Flutuante de Menu -->
+    <button class="floating-menu-btn" id="floatingMenuBtn">☰</button>
+    
+    <!-- Menu Flutuante -->
+    <nav class="floating-menu" id="floatingMenu">
+        <a href="resumo.html" class="menu-item">Resumo</a>
+        <a href="estoque.html" class="menu-item">Estoque</a>
+        <a href="producao.html" class="menu-item active">Produção</a>
+        <a href="configuracao.html" class="menu-item">Configurações</a>
+        <button id="btnGerenciarMarcas" class="menu-item">Gerenciar Marcas</button>
+    </nav>
+
+    <script src="../js/navigation.js"></script>
+    <script src="../js/script.js"></script>
+    <script src="../js/producao.js"></script>
+</body>
+</html>
