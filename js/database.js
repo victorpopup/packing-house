@@ -410,6 +410,26 @@ class PackingHouseDB {
         }
     }
 
+    // Limpar histórico de movimentações
+    async clearMovementsHistory() {
+        return new Promise((resolve, reject) => {
+            const transaction = this.db.transaction(['movements'], 'readwrite');
+            const movementsStore = transaction.objectStore('movements');
+            
+            movementsStore.clear();
+
+            transaction.oncomplete = () => {
+                console.log('Histórico de movimentações limpo');
+                resolve();
+            };
+
+            transaction.onerror = (event) => {
+                console.error('Erro ao limpar histórico de movimentações:', event.target.error);
+                reject(event.target.error);
+            };
+        });
+    }
+
     // Limpar banco de dados (para testes)
     async clearAll() {
         return new Promise((resolve, reject) => {

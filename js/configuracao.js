@@ -209,6 +209,30 @@ class ConfiguracaoManager {
         }
     }
 
+    async confirmClearHistory() {
+        if (!confirm('Tem certeza que deseja excluir todo o histórico de movimentações? Esta ação não pode ser desfeita, mas os materiais cadastrados serão mantidos.')) {
+            return;
+        }
+
+        try {
+            await window.packingHouseDB.clearMovementsHistory();
+            
+            // Limpar array de movimentações da memória
+            if (typeof movements !== 'undefined') {
+                movements.length = 0;
+            }
+            
+            this.showSuccess('Histórico de movimentações excluído com sucesso!');
+            
+            // Atualizar status do sistema
+            await this.loadSystemStatus();
+            
+        } catch (error) {
+            console.error('Erro ao limpar histórico:', error);
+            this.showError('Erro ao limpar histórico: ' + error.message);
+        }
+    }
+
     async showStatistics() {
         try {
             const stats = await window.packingHouseDB.getStats();
@@ -454,3 +478,16 @@ window.onclick = function(event) {
         modal.style.display = 'none';
     }
 }
+
+// Funções globais para acesso via onclick
+window.createBackupNow = () => window.configManager.createBackupNow();
+window.exportAllData = () => window.configManager.exportAllData();
+window.showImportArea = () => window.configManager.showImportArea();
+window.checkDataIntegrity = () => window.configManager.checkDataIntegrity();
+window.confirmClearAllData = () => window.configManager.confirmClearAllData();
+window.confirmClearBackups = () => window.configManager.confirmClearBackups();
+window.confirmClearHistory = () => window.configManager.confirmClearHistory();
+window.showStatistics = () => window.configManager.showStatistics();
+window.showRestoreOptions = () => window.configManager.showRestoreOptions();
+window.closeBackupModal = () => window.configManager.closeBackupModal();
+window.checkIntegrity = () => window.configManager.checkIntegrity();
