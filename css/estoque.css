@@ -733,7 +733,190 @@ header h1 {
     line-height: 1.5;
 }
 
+/* Botões de Tipo de Movimentação */
+.movement-type-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 8px;
+}
+
+.movement-type-buttons input[type="radio"] {
+    display: none;
+}
+
+.movement-type-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 15px 20px;
+    border: 2px solid rgba(102, 126, 234, 0.2);
+    border-radius: 12px;
+    background: rgba(20, 20, 35, 0.8);
+    color: #a8a8a8;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.movement-type-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+}
+
+.movement-type-btn .btn-icon {
+    font-size: 18px;
+    font-weight: 700;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(102, 126, 234, 0.1);
+}
+
+.movement-type-buttons input[type="radio"]:checked + .entrada-btn {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    border-color: #28a745;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+.movement-type-buttons input[type="radio"]:checked + .entrada-btn .btn-icon {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.movement-type-buttons input[type="radio"]:checked + .saida-btn {
+    background: linear-gradient(135deg, #dc3545, #fd7e14);
+    color: white;
+    border-color: #dc3545;
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+}
+
+.movement-type-buttons input[type="radio"]:checked + .saida-btn .btn-icon {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Botões de Filtro de Tipo */
+.filter-type-buttons {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.filter-type-buttons input[type="radio"] {
+    display: none;
+}
+
+.filter-type-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 16px;
+    border: 2px solid rgba(102, 126, 234, 0.2);
+    border-radius: 10px;
+    background: rgba(20, 20, 35, 0.8);
+    color: #a8a8a8;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    min-width: 80px;
+}
+
+.filter-type-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 10px rgba(102, 126, 234, 0.2);
+    border-color: rgba(102, 126, 234, 0.4);
+}
+
+.filter-type-btn .btn-icon {
+    font-size: 14px;
+    font-weight: 700;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(102, 126, 234, 0.1);
+}
+
+.filter-type-buttons input[type="radio"]:checked + .all-btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border-color: #667eea;
+    box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+}
+
+.filter-type-buttons input[type="radio"]:checked + .all-btn .btn-icon {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.filter-type-buttons input[type="radio"]:checked + .entrada-btn {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    border-color: #28a745;
+    box-shadow: 0 2px 10px rgba(40, 167, 69, 0.3);
+}
+
+.filter-type-buttons input[type="radio"]:checked + .entrada-btn .btn-icon {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.filter-type-buttons input[type="radio"]:checked + .saida-btn {
+    background: linear-gradient(135deg, #dc3545, #fd7e14);
+    color: white;
+    border-color: #dc3545;
+    box-shadow: 0 2px 10px rgba(220, 53, 69, 0.3);
+}
+
+.filter-type-buttons input[type="radio"]:checked + .saida-btn .btn-icon {
+    background: rgba(255, 255, 255, 0.2);
+}
+
 /* Responsive */
+@media (max-width: 768px) {
+    .movement-type-buttons {
+        gap: 10px;
+    }
+    
+    .movement-type-btn {
+        padding: 12px 15px;
+        font-size: 13px;
+    }
+    
+    .movement-type-btn .btn-icon {
+        font-size: 16px;
+        width: 20px;
+        height: 20px;
+    }
+    
+    .filter-type-buttons {
+        gap: 6px;
+    }
+    
+    .filter-type-btn {
+        padding: 8px 12px;
+        font-size: 11px;
+        min-width: 70px;
+    }
+    
+    .filter-type-btn .btn-icon {
+        font-size: 12px;
+        width: 16px;
+        height: 16px;
+    }
+}
 @media (max-width: 768px) {
     .page-content {
         margin: 10px auto;

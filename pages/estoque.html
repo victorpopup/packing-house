@@ -166,17 +166,31 @@
 
                 <div class="form-group">
 
-                    <label for="movementType">Tipo</label>
+                    <label>Tipo de Movimentação</label>
 
-                    <select id="movementType" required>
+                    <div class="movement-type-buttons">
 
-                        <option value="">Selecione o tipo</option>
+                        <input type="radio" id="movementTypeEntrada" name="movementType" value="entrada" required>
 
-                        <option value="entrada">Entrada</option>
+                        <label for="movementTypeEntrada" class="movement-type-btn entrada-btn">
 
-                        <option value="saida">Saída</option>
+                            <span class="btn-icon">+</span>
 
-                    </select>
+                            <span class="btn-text">Entrada</span>
+
+                        </label>
+
+                        <input type="radio" id="movementTypeSaida" name="movementType" value="saida" required>
+
+                        <label for="movementTypeSaida" class="movement-type-btn saida-btn">
+
+                            <span class="btn-icon">-</span>
+
+                            <span class="btn-text">Saída</span>
+
+                        </label>
+
+                    </div>
 
                 </div>
 
@@ -232,11 +246,22 @@
 
             <input type="date" id="filterDate" class="search-input" onchange="filterHistory()">
 
-            <select id="filterType" class="search-input" onchange="filterHistory()">
-                <option value="">Todos os tipos</option>
-                <option value="entrada">Entrada</option>
-                <option value="saida">Saída</option>
-            </select>
+            <div class="filter-type-buttons">
+                <input type="radio" id="filterTypeAll" name="filterType" value="" checked>
+                <label for="filterTypeAll" class="filter-type-btn all-btn">
+                    <span class="btn-text">Todos</span>
+                </label>
+                <input type="radio" id="filterTypeEntrada" name="filterType" value="entrada">
+                <label for="filterTypeEntrada" class="filter-type-btn entrada-btn">
+                    <span class="btn-icon">+</span>
+                    <span class="btn-text">Entrada</span>
+                </label>
+                <input type="radio" id="filterTypeSaida" name="filterType" value="saida">
+                <label for="filterTypeSaida" class="filter-type-btn saida-btn">
+                    <span class="btn-icon">-</span>
+                    <span class="btn-text">Saída</span>
+                </label>
+            </div>
 
             <button class="btn-secondary" onclick="clearFilters()">Limpar</button>
         </div>

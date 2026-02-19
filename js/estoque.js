@@ -334,6 +334,14 @@ async function addMovement(materialName, type, quantity, date) {
 
 // === FUNÇÕES DE INTERFACE ===
 
+// Resetar botões de tipo de movimentação
+function resetMovementTypeButtons() {
+    const checkedRadio = document.querySelector('input[name="movementType"]:checked');
+    if (checkedRadio) {
+        checkedRadio.checked = false;
+    }
+}
+
 // Atualizar filtro de materiais
 function updateMaterialFilter() {
     const filterSelect = document.getElementById('materialSelect');
@@ -431,7 +439,7 @@ function searchMaterials() {
 async function filterHistory() {
     const materialFilter = document.getElementById('filterMaterial').value;
     const dateFilter = document.getElementById('filterDate').value;
-    const typeFilter = document.getElementById('filterType').value;
+    const typeFilter = document.querySelector('input[name="filterType"]:checked').value;
     
     const filters = {};
     if (materialFilter) filters.materialName = materialFilter;
@@ -470,7 +478,12 @@ async function filterHistory() {
 function clearFilters() {
     document.getElementById('filterMaterial').value = '';
     document.getElementById('filterDate').value = '';
-    document.getElementById('filterType').value = '';
+    
+    // Resetar botões de filtro para "Todos"
+    const allFilterRadio = document.getElementById('filterTypeAll');
+    if (allFilterRadio) {
+        allFilterRadio.checked = true;
+    }
     
     renderMovements();
     
@@ -645,13 +658,14 @@ function setupEventListeners() {
             e.preventDefault();
             
             const material = document.getElementById('materialSelect').value;
-            const type = document.getElementById('movementType').value;
+            const type = document.querySelector('input[name="movementType"]:checked').value;
             const quantity = document.getElementById('movementQuantity').value;
             const date = document.getElementById('movementDate').value;
             
             addMovement(material, type, quantity, date); // Sempre 'unidade'
             
             movementForm.reset();
+            resetMovementTypeButtons();
             if (dateInput) {
                 dateInput.value = new Date().toISOString().split('T')[0];
             }
@@ -661,11 +675,15 @@ function setupEventListeners() {
     // Filter listeners
     const materialFilter = document.getElementById('filterMaterial');
     const dateFilter = document.getElementById('filterDate');
-    const typeFilter = document.getElementById('filterType');
+    const typeFilterRadios = document.querySelectorAll('input[name="filterType"]');
     
     if (materialFilter) materialFilter.addEventListener('change', filterHistory);
     if (dateFilter) dateFilter.addEventListener('change', filterHistory);
-    if (typeFilter) typeFilter.addEventListener('change', filterHistory);
+    if (typeFilterRadios.length > 0) {
+        typeFilterRadios.forEach(radio => {
+            radio.addEventListener('change', filterHistory);
+        });
+    }
 }
 
 // Adicionar CSS animations
