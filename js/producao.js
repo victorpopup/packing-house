@@ -5,6 +5,8 @@ class ProductionManager {
         this.producoes = this.loadProducoes();
         this.editingMarcaId = null;
         this.editingProducaoId = null;
+        this.selectedMarcaId = null;
+        this.selectedMarca = null;
         this.init();
     }
 
@@ -23,6 +25,40 @@ class ProductionManager {
             this.handleProducaoSubmit();
         });
 
+        // Botões de gerenciar marcas
+        document.getElementById('btnGerenciarMarcas').addEventListener('click', () => {
+            this.openMarcasModal();
+        });
+
+        document.getElementById('btnGerenciarMarcasHeader').addEventListener('click', () => {
+            this.openMarcasModal();
+        });
+
+        document.getElementById('btnAddMarca').addEventListener('click', () => {
+            this.openMarcasModal();
+        });
+
+        // Autocompletar de marcas
+        const marcaInput = document.getElementById('marcaProducao');
+        marcaInput.addEventListener('input', (e) => {
+            this.handleMarcaInput(e.target.value);
+        });
+
+        marcaInput.addEventListener('focus', () => {
+            this.showMarcaSuggestions();
+        });
+
+        marcaInput.addEventListener('blur', () => {
+            setTimeout(() => {
+                this.hideMarcaSuggestions();
+            }, 200);
+        });
+
+        // Navegação por teclado nas sugestões
+        marcaInput.addEventListener('keydown', (e) => {
+            this.handleMarcaKeydown(e);
+        });
+
         // Filtros
         document.getElementById('btnFiltrar').addEventListener('click', () => {
             this.filterProducoes();
@@ -37,16 +73,7 @@ class ProductionManager {
             this.calculatePesoTotal();
         });
 
-        document.getElementById('marcaProducao').addEventListener('change', () => {
-            this.updatePesoCaixa();
-            this.calculatePesoTotal();
-        });
-
         // Modal de marcas
-        document.getElementById('btnGerenciarMarcas').addEventListener('click', () => {
-            this.openMarcasModal();
-        });
-
         document.querySelector('.close').addEventListener('click', () => {
             this.closeMarcasModal();
         });
@@ -64,6 +91,9 @@ class ProductionManager {
         // Reset do formulário de produção
         document.getElementById('formProducao').addEventListener('reset', () => {
             setTimeout(() => {
+                this.selectedMarcaId = null;
+                this.selectedMarca = null;
+                document.getElementById('marcaProducao').value = '';
                 this.updatePesoCaixa();
                 this.calculatePesoTotal();
             }, 100);
@@ -74,6 +104,13 @@ class ProductionManager {
             const modal = document.getElementById('modalMarcas');
             if (e.target === modal) {
                 this.closeMarcasModal();
+            }
+        });
+
+        // Fechar sugestões clicando fora
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.marca-autocomplete-container')) {
+                this.hideMarcaSuggestions();
             }
         });
     }
@@ -92,21 +129,110 @@ class ProductionManager {
 
     saveMarcas() {
         localStorage.setItem('marcas', JSON.stringify(this.marcas));
-        this.populateMarcasSelect();
         this.populateFiltroMarcas();
         this.loadMarcasList();
     }
 
-    populateMarcasSelect() {
-        const select = document.getElementById('marcaProducao');
-        select.innerHTML = '<option value="">Selecione uma marca</option>';
-        
-        this.marcas.forEach(marca => {
-            const option = document.createElement('option');
-            option.value = marca.id;
-            option.textContent = `${marca.nome} (${marca.peso}kg)`;
-            select.appendChild(option);
+    // Funcionalidades de Autocompletar
+    handleMarcaInput(query) {
+        this.showMarcaSuggestions(query);
+    }
+
+    showMarcaSuggestions(query = '') {
+        const suggestionsContainer = document.getElementById('marcaSuggestions');
+        const filteredMarcas = this.marcas.filter(marca => 
+            marca.nome.toLowerCase().includes(query.toLowerCase())
+        );
+
+        if (filteredMarcas.length === 0) {
+            suggestionsContainer.innerHTML = '<div class="marca-suggestions-empty">Nenhuma marca encontrada</div>';
+            suggestionsContainer.style.display = 'block';
+            return;
+        }
+
+        suggestionsContainer.innerHTML = filteredMarcas.map(marca => `
+            <div class="marca-suggestion-item" data-marca-id="${marca.id}">
+                <span class="marca-suggestion-name">${marca.nome}</span>
+                <span class="marca-suggestion-peso">${marca.peso}kg</span>
+            </div>
+        `).join('');
+
+        suggestionsContainer.style.display = 'block';
+
+        // Adicionar event listeners aos itens
+        suggestionsContainer.querySelectorAll('.marca-suggestion-item').forEach(item => {
+            item.addEventListener('click', () => {
+                this.selectMarca(item.dataset.marcaId);
+            });
         });
+    }
+
+    hideMarcaSuggestions() {
+        const suggestionsContainer = document.getElementById('marcaSuggestions');
+        suggestionsContainer.style.display = 'none';
+    }
+
+    selectMarca(marcaId) {
+        const marca = this.marcas.find(m => m.id === marcaId);
+        if (!marca) return;
+
+        this.selectedMarcaId = marcaId;
+        this.selectedMarca = marca;
+        
+        document.getElementById('marcaProducao').value = marca.nome;
+        this.hideMarcaSuggestions();
+        this.updatePesoCaixa();
+        this.calculatePesoTotal();
+    }
+
+    handleMarcaKeydown(e) {
+        const suggestionsContainer = document.getElementById('marcaSuggestions');
+        const items = suggestionsContainer.querySelectorAll('.marca-suggestion-item');
+        
+        if (items.length === 0) return;
+
+        let currentIndex = -1;
+        items.forEach((item, index) => {
+            if (item.classList.contains('selected')) {
+                currentIndex = index;
+            }
+        });
+
+        switch (e.key) {
+            case 'ArrowDown':
+                e.preventDefault();
+                if (currentIndex < items.length - 1) {
+                    if (currentIndex >= 0) items[currentIndex].classList.remove('selected');
+                    currentIndex++;
+                    items[currentIndex].classList.add('selected');
+                }
+                break;
+            
+            case 'ArrowUp':
+                e.preventDefault();
+                if (currentIndex > 0) {
+                    items[currentIndex].classList.remove('selected');
+                    currentIndex--;
+                    items[currentIndex].classList.add('selected');
+                }
+                break;
+            
+            case 'Enter':
+                e.preventDefault();
+                if (currentIndex >= 0) {
+                    this.selectMarca(items[currentIndex].dataset.marcaId);
+                }
+                break;
+            
+            case 'Escape':
+                this.hideMarcaSuggestions();
+                break;
+        }
+    }
+
+    populateMarcasSelect() {
+        // Este método não é mais necessário para o select principal,
+        // mas mantido para compatibilidade com outras partes do sistema
     }
 
     populateFiltroMarcas() {
@@ -287,19 +413,63 @@ class ProductionManager {
     }
 
     updatePesoCaixa() {
-        const marcaId = document.getElementById('marcaProducao').value;
         const pesoCaixaInput = document.getElementById('pesoCaixa');
 
-        if (marcaId) {
-            const marca = this.marcas.find(m => m.id === marcaId);
-            if (marca) {
-                pesoCaixaInput.value = marca.peso;
-            } else {
-                pesoCaixaInput.value = '';
-            }
+        if (this.selectedMarca) {
+            pesoCaixaInput.value = this.selectedMarca.peso;
         } else {
             pesoCaixaInput.value = '';
         }
+    }
+
+    handleProducaoSubmit() {
+        const data = document.getElementById('dataProducao').value;
+        const quantidade = parseInt(document.getElementById('quantidadeCaixas').value);
+        const pesoCaixa = parseFloat(document.getElementById('pesoCaixa').value);
+        const pesoTotal = parseFloat(document.getElementById('pesoTotal').value);
+
+        if (!data || !this.selectedMarcaId || !quantidade || !pesoTotal) {
+            this.showMessage('Preencha todos os campos obrigatórios', 'error');
+            return;
+        }
+
+        const marca = this.marcas.find(m => m.id === this.selectedMarcaId);
+        if (!marca) {
+            this.showMessage('Marca não encontrada', 'error');
+            return;
+        }
+
+        const producao = {
+            id: this.editingProducaoId || this.generateId(),
+            data,
+            marcaId: this.selectedMarcaId,
+            marcaNome: marca.nome,
+            quantidade,
+            pesoCaixa,
+            pesoTotal,
+            createdAt: this.editingProducaoId ? 
+                this.producoes.find(p => p.id === this.editingProducaoId).createdAt : 
+                new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        };
+
+        if (this.editingProducaoId) {
+            const index = this.producoes.findIndex(p => p.id === this.editingProducaoId);
+            if (index !== -1) {
+                this.producoes[index] = producao;
+                this.showMessage('Produção atualizada com sucesso', 'success');
+            }
+        } else {
+            this.producoes.push(producao);
+            this.showMessage('Produção registrada com sucesso', 'success');
+        }
+
+        this.saveProducoes();
+        document.getElementById('formProducao').reset();
+        this.setDefaultDate();
+        this.editingProducaoId = null;
+        this.selectedMarcaId = null;
+        this.selectedMarca = null;
     }
 
     calculatePesoTotal() {
@@ -360,8 +530,11 @@ class ProductionManager {
         if (!producao) return;
 
         this.editingProducaoId = id;
+        this.selectedMarcaId = producao.marcaId;
+        this.selectedMarca = this.marcas.find(m => m.id === producao.marcaId);
+        
         document.getElementById('dataProducao').value = producao.data;
-        document.getElementById('marcaProducao').value = producao.marcaId;
+        document.getElementById('marcaProducao').value = producao.marcaNome;
         document.getElementById('quantidadeCaixas').value = producao.quantidade;
         
         this.updatePesoCaixa();

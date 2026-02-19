@@ -30,8 +30,8 @@
         <!-- Setor de Registro -->
         <section class="sector-section">
             <div class="sector-header">
-                <h3>📝 Setor de Registro</h3>
-                <p>Registre nova produção diária</p>
+                <h3>Registro de Produção Diária</h3>
+                <button id="btnGerenciarMarcasHeader" class="btn btn-secondary btn-small">+ Gerenciar Marcas</button>
             </div>
             
             <!-- Registro de Produção -->
@@ -44,9 +44,13 @@
                         </div>
                         <div class="form-group">
                             <label for="marcaProducao">Marca:</label>
-                            <select id="marcaProducao" required>
-                                <option value="">Selecione uma marca</option>
-                            </select>
+                            <div class="marca-input-container">
+                                <div class="marca-autocomplete-container">
+                                    <input type="text" id="marcaProducao" placeholder="Digite ou selecione uma marca..." required autocomplete="off">
+                                    <div class="marca-suggestions" id="marcaSuggestions"></div>
+                                </div>
+                                <button type="button" id="btnAddMarca" class="btn btn-primary btn-small">+</button>
+                            </div>
                         </div>
                     </div>
                     <div class="form-row">
