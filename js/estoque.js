@@ -34,7 +34,6 @@ async function loadMaterials() {
     try {
         materials = await window.packingHouseDB.getAllMaterials();
         renderMaterials();
-        updateMaterialFilter();
         updateStats();
     } catch (error) {
         console.error('Erro ao carregar materiais:', error);
