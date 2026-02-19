@@ -27,90 +27,105 @@
             <p>Registre e acompanhe a produção diária</p>
         </div>
 
-        <!-- Filtros -->
-        <section class="filters-section">
-            <div class="filter-container">
-                <div class="filter-group">
-                    <label for="dataFiltro">Data:</label>
-                    <input type="date" id="dataFiltro" class="filter-input">
-                </div>
-                <div class="filter-group">
-                    <label for="marcaFiltro">Marca:</label>
-                    <select id="marcaFiltro" class="filter-input">
-                        <option value="">Todas as marcas</option>
-                    </select>
-                </div>
-                <button id="btnFiltrar" class="btn btn-primary">Filtrar</button>
-                <button id="btnLimparFiltro" class="btn btn-secondary">Limpar</button>
+        <!-- Setor de Registro -->
+        <section class="sector-section">
+            <div class="sector-header">
+                <h3>📝 Setor de Registro</h3>
+                <p>Registre nova produção diária</p>
+            </div>
+            
+            <!-- Registro de Produção -->
+            <div class="production-form-section">
+                <form id="formProducao" class="production-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="dataProducao">Data:</label>
+                            <input type="date" id="dataProducao" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="marcaProducao">Marca:</label>
+                            <select id="marcaProducao" required>
+                                <option value="">Selecione uma marca</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="quantidadeCaixas">Quantidade de Caixas:</label>
+                            <input type="number" id="quantidadeCaixas" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="pesoCaixa">Peso por Caixa (kg):</label>
+                            <input type="number" id="pesoCaixa" step="0.1" min="0" readonly>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="pesoTotal">Peso Total (kg):</label>
+                            <input type="number" id="pesoTotal" step="0.1" min="0" readonly>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Registrar Produção</button>
+                        <button type="reset" class="btn btn-secondary">Limpar</button>
+                    </div>
+                </form>
             </div>
         </section>
 
-        <!-- Registro de Produção -->
-        <section class="production-form-section">
-            <h3>Registrar Produção</h3>
-            <form id="formProducao" class="production-form">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="dataProducao">Data:</label>
-                        <input type="date" id="dataProducao" required>
+        <!-- Setor de Consulta e Filtragem -->
+        <section class="sector-section">
+            <div class="sector-header">
+                <h3>🔍 Setor de Consulta e Filtragem</h3>
+                <p>Consulte e filtre os registros de produção</p>
+            </div>
+            
+            <!-- Filtros -->
+            <div class="filters-section">
+                <div class="filter-container">
+                    <div class="filter-group">
+                        <label for="dataFiltro">Data:</label>
+                        <input type="date" id="dataFiltro" class="filter-input">
                     </div>
-                    <div class="form-group">
-                        <label for="marcaProducao">Marca:</label>
-                        <select id="marcaProducao" required>
-                            <option value="">Selecione uma marca</option>
+                    <div class="filter-group">
+                        <label for="marcaFiltro">Marca:</label>
+                        <select id="marcaFiltro" class="filter-input">
+                            <option value="">Todas as marcas</option>
                         </select>
                     </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="quantidadeCaixas">Quantidade de Caixas:</label>
-                        <input type="number" id="quantidadeCaixas" min="0" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="pesoCaixa">Peso por Caixa (kg):</label>
-                        <input type="number" id="pesoCaixa" step="0.1" min="0" readonly>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="pesoTotal">Peso Total (kg):</label>
-                        <input type="number" id="pesoTotal" step="0.1" min="0" readonly>
-                    </div>
-                </div>
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Registrar Produção</button>
-                    <button type="reset" class="btn btn-secondary">Limpar</button>
-                </div>
-            </form>
-        </section>
-
-        <!-- Lista de Produção -->
-        <section class="production-list-section">
-            <div class="section-header">
-                <h3>Registros de Produção</h3>
-                <div class="summary-info">
-                    <span id="totalCaixas">0 caixas</span>
-                    <span id="totalPeso">0 kg</span>
+                    <button id="btnFiltrar" class="btn btn-primary">Filtrar</button>
+                    <button id="btnLimparFiltro" class="btn btn-secondary">Limpar</button>
                 </div>
             </div>
-            <div class="table-container">
-                <table class="production-table">
-                    <thead>
-                        <tr>
-                            <th>Data</th>
-                            <th>Marca</th>
-                            <th>Qtd. Caixas</th>
-                            <th>Peso/Box (kg)</th>
-                            <th>Peso Total (kg)</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="productionTableBody">
-                        <!-- Registros serão inseridos aqui -->
-                    </tbody>
-                </table>
-                <div id="emptyState" class="empty-state">
-                    <p>Nenhum registro de produção encontrado</p>
+
+            <!-- Lista de Produção -->
+            <div class="production-list-section">
+                <div class="section-header">
+                    <h4>Registros de Produção</h4>
+                    <div class="summary-info">
+                        <span id="totalCaixas">0 caixas</span>
+                        <span id="totalPeso">0 kg</span>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="production-table">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Marca</th>
+                                <th>Qtd. Caixas</th>
+                                <th>Peso/Box (kg)</th>
+                                <th>Peso Total (kg)</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productionTableBody">
+                            <!-- Registros serão inseridos aqui -->
+                        </tbody>
+                    </table>
+                    <div id="emptyState" class="empty-state">
+                        <p>Nenhum registro de produção encontrado</p>
+                    </div>
                 </div>
             </div>
         </section>
