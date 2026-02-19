@@ -152,8 +152,14 @@ header h1 {
 }
 
 /* Specific styles for filter inputs */
-#filterMaterial {
+.filter-material-container {
+    position: relative;
     flex: 2;
+    min-width: 250px;
+}
+
+#filterMaterial {
+    width: 100%;
     min-width: 250px;
 }
 
@@ -165,6 +171,71 @@ header h1 {
 #filterType {
     flex: 1;
     min-width: 150px;
+}
+
+/* Container de sugestões do filtro de materiais */
+.filter-material-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgba(30, 30, 50, 0.98);
+    border: 2px solid rgba(102, 126, 234, 0.3);
+    border-radius: 12px;
+    margin-top: 5px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    display: none;
+}
+
+.filter-material-suggestions.show {
+    display: block;
+}
+
+.filter-suggestion-item {
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.filter-suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.filter-suggestion-item:hover {
+    background: rgba(102, 126, 234, 0.1);
+    transform: translateX(5px);
+}
+
+.filter-suggestion-item.selected {
+    background: rgba(102, 126, 234, 0.2);
+}
+
+.filter-suggestion-name {
+    font-weight: 600;
+    color: #e8e8e8;
+    font-size: 14px;
+}
+
+.filter-suggestion-quantity {
+    font-size: 12px;
+    color: #667eea;
+    font-weight: 700;
+}
+
+.filter-suggestion-no-results {
+    padding: 15px 20px;
+    color: #a8a8a8;
+    font-style: italic;
+    text-align: center;
+    font-size: 13px;
 }
 
 /* Buttons */

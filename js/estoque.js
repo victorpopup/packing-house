@@ -6,6 +6,7 @@ let movements = [];
 let currentEditingMaterial = null;
 let selectedMaterial = null;
 let suggestionIndex = -1;
+let filterSuggestionIndex = -1;
 
 // Modal functions
 function showAddMaterialModal() {
@@ -58,9 +59,6 @@ async function loadAllData() {
         loadMaterials(),
         loadMovements()
     ]);
-    
-    // Atualizar filtros após carregar os dados
-    updateHistoryMaterialFilter();
 }
 
 // === FUNÇÕES DE RENDERIZAÇÃO ===
@@ -333,15 +331,55 @@ async function addMovement(materialName, type, quantity, date) {
 
 // === FUNÇÕES DE AUTOCOMPLETE ===
 
-// Filtrar materiais para autocomplete
+// Função de fuzzy matching para encontrar similaridade entre strings
+function fuzzyMatch(searchTerm, target) {
+    const search = searchTerm.toLowerCase();
+    const targetStr = target.toLowerCase();
+    
+    // Se o termo de busca está contido no alvo, retorna 100%
+    if (targetStr.includes(search)) {
+        return 100;
+    }
+    
+    // Calcular similaridade usando Levenshtein distance simplificada
+    let score = 0;
+    let searchIndex = 0;
+    
+    for (let i = 0; i < targetStr.length && searchIndex < search.length; i++) {
+        if (targetStr[i] === search[searchIndex]) {
+            score++;
+            searchIndex++;
+        }
+    }
+    
+    // Calcular percentual de similaridade
+    const similarity = (score / search.length) * 100;
+    
+    // Ajustar score baseado no comprimento do alvo
+    const lengthPenalty = Math.abs(targetStr.length - search.length) * 2;
+    const finalScore = Math.max(0, similarity - lengthPenalty);
+    
+    return finalScore;
+}
+
+// Filtrar materiais para autocomplete com fuzzy matching
 function filterMaterialsForAutocomplete(searchTerm) {
     if (!searchTerm || searchTerm.length < 2) {
         return [];
     }
     
-    return materials.filter(material => 
-        material.name.toLowerCase().includes(searchTerm.toLowerCase())
-    ).slice(0, 5); // Limitar a 5 resultados
+    // Mapear materiais com scores de similaridade
+    const materialsWithScore = materials.map(material => ({
+        material,
+        score: fuzzyMatch(searchTerm, material.name)
+    }));
+    
+    // Filtrar apenas materiais com score > 30 e ordenar por score
+    return materialsWithScore
+        .filter(item => item.score > 30)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 5)
+        .map(item => item.material);
 }
 
 // Mostrar sugestões de autocomplete
@@ -419,6 +457,105 @@ function navigateSuggestions(direction) {
     items[suggestionIndex].scrollIntoView({ block: 'nearest' });
 }
 
+// === FUNÇÕES DE AUTOCOMPLETE PARA FILTRO ===
+
+// Filtrar materiais para autocomplete do filtro
+function filterMaterialsForFilter(searchTerm) {
+    if (!searchTerm || searchTerm.length < 2) {
+        return [];
+    }
+    
+    // Mapear materiais com scores de similaridade
+    const materialsWithScore = materials.map(material => ({
+        material,
+        score: fuzzyMatch(searchTerm, material.name)
+    }));
+    
+    // Filtrar apenas materiais com score > 30 e ordenar por score
+    return materialsWithScore
+        .filter(item => item.score > 30)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 5)
+        .map(item => item.material);
+}
+
+// Mostrar sugestões de autocomplete para o filtro
+function showFilterMaterialSuggestions(suggestions) {
+    const suggestionsContainer = document.getElementById('filterMaterialSuggestions');
+    
+    if (suggestions.length === 0) {
+        suggestionsContainer.innerHTML = '<div class="filter-suggestion-no-results">Nenhum material encontrado</div>';
+        suggestionsContainer.classList.add('show');
+        return;
+    }
+    
+    suggestionsContainer.innerHTML = suggestions.map((material, index) => `
+        <div class="filter-suggestion-item" data-material-name="${material.name}" data-index="${index}">
+            <span class="filter-suggestion-name">${material.name}</span>
+            <span class="filter-suggestion-quantity">${material.quantity} ${material.unit}</span>
+        </div>
+    `).join('');
+    
+    suggestionsContainer.classList.add('show');
+    
+    // Adicionar event listeners aos itens
+    suggestionsContainer.querySelectorAll('.filter-suggestion-item').forEach(item => {
+        item.addEventListener('click', function() {
+            selectFilterMaterial(this.dataset.materialName);
+        });
+    });
+}
+
+// Selecionar material no filtro
+function selectFilterMaterial(materialName) {
+    const materialInput = document.getElementById('filterMaterial');
+    const suggestionsContainer = document.getElementById('filterMaterialSuggestions');
+    
+    materialInput.value = materialName;
+    suggestionsContainer.classList.remove('show');
+    filterSuggestionIndex = -1;
+    
+    // Limpar seleção anterior
+    suggestionsContainer.querySelectorAll('.filter-suggestion-item').forEach(item => {
+        item.classList.remove('selected');
+    });
+    
+    // Aplicar filtro automaticamente
+    filterHistory();
+}
+
+// Esconder sugestões do filtro
+function hideFilterMaterialSuggestions() {
+    const suggestionsContainer = document.getElementById('filterMaterialSuggestions');
+    setTimeout(() => {
+        suggestionsContainer.classList.remove('show');
+    }, 200); // Pequeno delay para permitir clique nos itens
+}
+
+// Navegar pelas sugestões do filtro com teclado
+function navigateFilterSuggestions(direction) {
+    const suggestionsContainer = document.getElementById('filterMaterialSuggestions');
+    const items = suggestionsContainer.querySelectorAll('.filter-suggestion-item');
+    
+    if (items.length === 0) return;
+    
+    // Remover seleção anterior
+    if (filterSuggestionIndex >= 0 && filterSuggestionIndex < items.length) {
+        items[filterSuggestionIndex].classList.remove('selected');
+    }
+    
+    // Calcular novo índice
+    if (direction === 'down') {
+        filterSuggestionIndex = filterSuggestionIndex < items.length - 1 ? filterSuggestionIndex + 1 : 0;
+    } else if (direction === 'up') {
+        filterSuggestionIndex = filterSuggestionIndex > 0 ? filterSuggestionIndex - 1 : items.length - 1;
+    }
+    
+    // Adicionar seleção ao novo item
+    items[filterSuggestionIndex].classList.add('selected');
+    items[filterSuggestionIndex].scrollIntoView({ block: 'nearest' });
+}
+
 // === FUNÇÕES DE INTERFACE ===
 
 // Resetar botões de tipo de movimentação
@@ -427,25 +564,6 @@ function resetMovementTypeButtons() {
     if (checkedRadio) {
         checkedRadio.checked = false;
     }
-}
-
-// Atualizar filtro de materiais para histórico
-function updateHistoryMaterialFilter() {
-    const filterSelect = document.getElementById('filterMaterial');
-    if (!filterSelect) return;
-    
-    // Limpar opções existentes (exceto "Todos os materiais")
-    while (filterSelect.children.length > 1) {
-        filterSelect.removeChild(filterSelect.lastChild);
-    }
-    
-    // Adicionar opções de materiais
-    materials.sort((a, b) => a.name.localeCompare(b.name)).forEach(material => {
-        const option = document.createElement('option');
-        option.value = material.name;
-        option.textContent = material.name;
-        filterSelect.appendChild(option);
-    });
 }
 
 // Atualizar estatísticas
@@ -505,7 +623,7 @@ function searchMaterials() {
 
 // Filtrar histórico
 async function filterHistory() {
-    const materialFilter = document.getElementById('filterMaterial').value;
+    const materialFilter = document.getElementById('filterMaterial').value.trim();
     const dateFilter = document.getElementById('filterDate').value;
     const typeFilter = document.querySelector('input[name="filterType"]:checked').value;
     
@@ -746,11 +864,50 @@ function setupEventListeners() {
     const dateFilter = document.getElementById('filterDate');
     const typeFilterRadios = document.querySelectorAll('input[name="filterType"]');
     
-    if (materialFilter) materialFilter.addEventListener('change', filterHistory);
     if (dateFilter) dateFilter.addEventListener('change', filterHistory);
     if (typeFilterRadios.length > 0) {
         typeFilterRadios.forEach(radio => {
             radio.addEventListener('change', filterHistory);
+        });
+    }
+    
+    // Autocomplete listeners para o filtro de materiais
+    if (materialFilter) {
+        materialFilter.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.trim();
+            const suggestions = filterMaterialsForFilter(searchTerm);
+            showFilterMaterialSuggestions(suggestions);
+        });
+        
+        materialFilter.addEventListener('keydown', function(e) {
+            const suggestionsContainer = document.getElementById('filterMaterialSuggestions');
+            
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                navigateFilterSuggestions('down');
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                navigateFilterSuggestions('up');
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                const selectedItem = suggestionsContainer.querySelector('.filter-suggestion-item.selected');
+                if (selectedItem) {
+                    selectFilterMaterial(selectedItem.dataset.materialName);
+                } else {
+                    // Se não há item selecionado, aplica o filtro com o texto digitado
+                    filterHistory();
+                }
+            } else if (e.key === 'Escape') {
+                hideFilterMaterialSuggestions();
+            }
+        });
+        
+        materialFilter.addEventListener('blur', hideFilterMaterialSuggestions);
+        
+        // Prevenir que o clique nas sugestões feche o autocomplete
+        const suggestionsContainer = document.getElementById('filterMaterialSuggestions');
+        suggestionsContainer.addEventListener('mousedown', function(e) {
+            e.preventDefault();
         });
     }
     
