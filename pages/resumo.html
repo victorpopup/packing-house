@@ -11,7 +11,11 @@
 <body>
     <header>
         <div class="logo-container">
-            <img src="../image/logo.svg" alt="Packing House" class="logo-img">
+            <picture>
+                <source media="(max-width: 768px)" srcset="../image/logo.mobile.svg">
+                <source media="(min-width: 769px)" srcset="../image/logo.desktop.svg">
+                <img src="../image/logo.desktop.svg" alt="Packing House" class="logo-img">
+            </picture>
             <h1 class="logo-text">Packing House</h1>
         </div>
     </header>
