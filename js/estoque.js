@@ -57,6 +57,10 @@ async function loadAllData() {
         loadMaterials(),
         loadMovements()
     ]);
+    
+    // Atualizar filtros após carregar os dados
+    updateMaterialFilter();
+    updateHistoryMaterialFilter();
 }
 
 // === FUNÇÕES DE RENDERIZAÇÃO ===
@@ -332,6 +336,25 @@ async function addMovement(materialName, type, quantity, unit, date) {
 
 // Atualizar filtro de materiais
 function updateMaterialFilter() {
+    const filterSelect = document.getElementById('materialSelect');
+    if (!filterSelect) return;
+    
+    // Limpar opções existentes (exceto "Selecione um material")
+    while (filterSelect.children.length > 1) {
+        filterSelect.removeChild(filterSelect.lastChild);
+    }
+    
+    // Adicionar opções de materiais
+    materials.sort((a, b) => a.name.localeCompare(b.name)).forEach(material => {
+        const option = document.createElement('option');
+        option.value = material.name;
+        option.textContent = material.name;
+        filterSelect.appendChild(option);
+    });
+}
+
+// Atualizar filtro de materiais para histórico
+function updateHistoryMaterialFilter() {
     const filterSelect = document.getElementById('filterMaterial');
     if (!filterSelect) return;
     
@@ -354,18 +377,18 @@ async function updateStats() {
     try {
         const stats = await window.packingHouseDB.getStats();
         
-        // Atualizar cards de estatísticas
-        const totalCard = document.querySelector('.stat-number');
+        // Atualizar cards de estatísticas com os IDs corretos
+        const totalCard = document.getElementById('totalQuantity');
         if (totalCard) {
             totalCard.textContent = stats.totalQuantity.toLocaleString();
         }
         
-        const itemsCard = document.querySelectorAll('.stat-number')[1];
+        const itemsCard = document.getElementById('totalItems');
         if (itemsCard) {
             itemsCard.textContent = stats.totalMaterials;
         }
         
-        const lowStockCard = document.querySelectorAll('.stat-number')[2];
+        const lowStockCard = document.getElementById('lowStockItems');
         if (lowStockCard) {
             lowStockCard.textContent = stats.lowStockCount;
         }
