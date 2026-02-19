@@ -214,12 +214,12 @@ function createMovementListItem(movement) {
 // === FUNÇÕES DE CRUD ===
 
 // Adicionar material
-async function addMaterial(nome, quantidade, unidade) {
+async function addMaterial(nome, quantidade) {
     try {
         const material = {
             name: nome,
             quantity: parseInt(quantidade),
-            unit: unidade,
+            unit: 'unidade', // Sempre usar 'unidade' como padrão
             minStock: 20
         };
         
@@ -261,12 +261,12 @@ async function editMaterial(id) {
 }
 
 // Atualizar material
-async function updateMaterial(id, nome, quantidade, unidade) {
+async function updateMaterial(id, nome, quantidade) {
     try {
         const updates = {
             name: nome,
             quantity: parseInt(quantidade),
-            unit: unidade
+            unit: 'unidade' // Sempre usar 'unidade' como padrão
         };
         
         await window.packingHouseDB.updateMaterial(id, updates);
@@ -309,13 +309,13 @@ async function deleteMaterial(id) {
 }
 
 // Adicionar movimentação
-async function addMovement(materialName, type, quantity, unit, date) {
+async function addMovement(materialName, type, quantity, date) {
     try {
         const movement = {
             materialName,
             type,
             quantity: parseInt(quantity),
-            unit,
+            unit: 'unidade', // Sempre usar 'unidade' como padrão
             date: new Date(date).toISOString()
         };
         
@@ -607,9 +607,8 @@ function setupEventListeners() {
             
             const nome = document.getElementById('materialNome').value;
             const quantidade = document.getElementById('materialQuantidade').value;
-            const unidade = document.getElementById('materialUnidade').value;
             
-            addMaterial(nome, quantidade, unidade);
+            addMaterial(nome, quantidade); // Sempre 'unidade'
             
             materialForm.reset();
             closeModal('addMaterialModal');
@@ -624,9 +623,8 @@ function setupEventListeners() {
             
             const nome = document.getElementById('editMaterialNome').value;
             const quantidade = document.getElementById('editMaterialQuantidade').value;
-            const unidade = document.getElementById('editMaterialUnidade').value;
             
-            updateMaterial(currentEditingMaterial.id, nome, quantidade, unidade);
+            updateMaterial(currentEditingMaterial.id, nome, quantidade); // Sempre 'unidade'
             
             editMaterialForm.reset();
             currentEditingMaterial = null;
@@ -643,10 +641,9 @@ function setupEventListeners() {
             const material = document.getElementById('materialSelect').value;
             const type = document.getElementById('movementType').value;
             const quantity = document.getElementById('movementQuantity').value;
-            const unit = document.getElementById('movementUnit').value;
             const date = document.getElementById('movementDate').value;
             
-            addMovement(material, type, quantity, unit, date);
+            addMovement(material, type, quantity, date); // Sempre 'unidade'
             
             movementForm.reset();
             if (dateInput) {
