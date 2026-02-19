@@ -56,15 +56,11 @@
                             <label for="quantidadeCaixas">Quantidade de Caixas:</label>
                             <input type="number" id="quantidadeCaixas" min="0" required>
                         </div>
-                        <div class="form-group">
-                            <label for="pesoCaixa">Peso por Caixa (kg):</label>
-                            <input type="number" id="pesoCaixa" step="0.1" min="0" readonly>
-                        </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="pesoTotal">Peso Total (kg):</label>
-                            <input type="number" id="pesoTotal" step="0.1" min="0" readonly>
+                            <label>Peso Total Calculado:</label>
+                            <div class="peso-total-display" id="pesoTotalDisplay">0.0 kg</div>
                         </div>
                     </div>
                     <div class="form-actions">
@@ -78,8 +74,7 @@
         <!-- Setor de Consulta e Filtragem -->
         <section class="sector-section">
             <div class="sector-header">
-                <h3>🔍 Setor de Consulta e Filtragem</h3>
-                <p>Consulte e filtre os registros de produção</p>
+                <h3>Histórico de Produção</h3>
             </div>
             
             <!-- Filtros -->
@@ -95,7 +90,6 @@
                             <option value="">Todas as marcas</option>
                         </select>
                     </div>
-                    <button id="btnFiltrar" class="btn btn-primary">Filtrar</button>
                     <button id="btnLimparFiltro" class="btn btn-secondary">Limpar</button>
                 </div>
             </div>

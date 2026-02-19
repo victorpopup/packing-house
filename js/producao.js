@@ -44,11 +44,16 @@ class ProductionManager {
             this.handleMarcaKeydown(e);
         });
 
-        // Filtros
-        document.getElementById('btnFiltrar').addEventListener('click', () => {
+        // Filtros - aplicação automática
+        document.getElementById('dataFiltro').addEventListener('change', () => {
             this.filterProducoes();
         });
 
+        document.getElementById('marcaFiltro').addEventListener('change', () => {
+            this.filterProducoes();
+        });
+
+        // Botão de limpar filtro
         document.getElementById('btnLimparFiltro').addEventListener('click', () => {
             this.clearFilters();
         });
@@ -64,8 +69,7 @@ class ProductionManager {
                 this.selectedMarcaId = null;
                 this.selectedMarca = null;
                 document.getElementById('marcaProducao').value = '';
-                this.updatePesoCaixa();
-                this.calculatePesoTotal();
+                this.updatePesoTotalDisplay(0);
             }, 100);
         });
 
@@ -204,20 +208,14 @@ class ProductionManager {
     }
 
     updatePesoCaixa() {
-        const pesoCaixaInput = document.getElementById('pesoCaixa');
-
-        if (this.selectedMarca) {
-            pesoCaixaInput.value = this.selectedMarca.peso;
-        } else {
-            pesoCaixaInput.value = '';
-        }
+        // Este método não é mais necessário, pois o peso por caixa não é mais exibido
+        // Mantido para compatibilidade
     }
 
     handleProducaoSubmit() {
         const data = document.getElementById('dataProducao').value;
         const quantidade = parseInt(document.getElementById('quantidadeCaixas').value);
-        const pesoCaixa = parseFloat(document.getElementById('pesoCaixa').value);
-        const pesoTotal = parseFloat(document.getElementById('pesoTotal').value);
+        const pesoTotal = parseFloat(document.getElementById('pesoTotalDisplay').textContent.replace(' kg', ''));
 
         if (!data || !this.selectedMarcaId || !quantidade || !pesoTotal) {
             this.showMessage('Preencha todos os campos obrigatórios', 'error');
@@ -236,7 +234,7 @@ class ProductionManager {
             marcaId: this.selectedMarcaId,
             marcaNome: marca.nome,
             quantidade,
-            pesoCaixa,
+            pesoCaixa: marca.peso,
             pesoTotal,
             createdAt: this.editingProducaoId ? 
                 this.producoes.find(p => p.id === this.editingProducaoId).createdAt : 
@@ -261,14 +259,19 @@ class ProductionManager {
         this.editingProducaoId = null;
         this.selectedMarcaId = null;
         this.selectedMarca = null;
+        this.updatePesoTotalDisplay(0);
     }
 
     calculatePesoTotal() {
         const quantidade = parseInt(document.getElementById('quantidadeCaixas').value) || 0;
-        const pesoCaixa = parseFloat(document.getElementById('pesoCaixa').value) || 0;
+        const pesoCaixa = this.selectedMarca ? this.selectedMarca.peso : 0;
         const pesoTotal = quantidade * pesoCaixa;
         
-        document.getElementById('pesoTotal').value = pesoTotal.toFixed(1);
+        this.updatePesoTotalDisplay(pesoTotal);
+    }
+
+    updatePesoTotalDisplay(pesoTotal) {
+        document.getElementById('pesoTotalDisplay').textContent = `${pesoTotal.toFixed(1)} kg`;
     }
 
     loadProducoesTable(producoesFiltradas = null) {
@@ -328,8 +331,7 @@ class ProductionManager {
         document.getElementById('marcaProducao').value = producao.marcaNome;
         document.getElementById('quantidadeCaixas').value = producao.quantidade;
         
-        this.updatePesoCaixa();
-        document.getElementById('pesoTotal').value = producao.pesoTotal.toFixed(1);
+        this.updatePesoTotalDisplay(producao.pesoTotal);
 
         // Rolar para o formulário
         document.querySelector('.production-form-section').scrollIntoView({ behavior: 'smooth' });
