@@ -58,20 +58,15 @@ class ProductionManager {
             this.clearFilters();
         });
 
-        // Auto-cálculo de peso total
-        document.getElementById('quantidadeCaixas').addEventListener('input', () => {
-            this.calculatePesoTotal();
-        });
-
         // Reset do formulário de produção
         document.getElementById('formProducao').addEventListener('reset', () => {
             setTimeout(() => {
                 this.selectedMarcaId = null;
                 this.selectedMarca = null;
                 document.getElementById('marcaProducao').value = '';
-                this.updatePesoTotalDisplay(0);
             }, 100);
         });
+
 
         // Fechar sugestões clicando fora
         document.addEventListener('click', (e) => {
@@ -146,8 +141,6 @@ class ProductionManager {
         
         document.getElementById('marcaProducao').value = marca.nome;
         this.hideMarcaSuggestions();
-        this.updatePesoCaixa();
-        this.calculatePesoTotal();
     }
 
     handleMarcaKeydown(e) {
@@ -215,9 +208,8 @@ class ProductionManager {
     handleProducaoSubmit() {
         const data = document.getElementById('dataProducao').value;
         const quantidade = parseInt(document.getElementById('quantidadeCaixas').value);
-        const pesoTotal = parseFloat(document.getElementById('pesoTotalDisplay').textContent.replace(' kg', ''));
 
-        if (!data || !this.selectedMarcaId || !quantidade || !pesoTotal) {
+        if (!data || !this.selectedMarcaId || !quantidade) {
             this.showMessage('Preencha todos os campos obrigatórios', 'error');
             return;
         }
@@ -227,6 +219,8 @@ class ProductionManager {
             this.showMessage('Marca não encontrada', 'error');
             return;
         }
+
+        const pesoTotal = quantidade * marca.peso;
 
         const producao = {
             id: this.editingProducaoId || this.generateId(),
@@ -259,20 +253,8 @@ class ProductionManager {
         this.editingProducaoId = null;
         this.selectedMarcaId = null;
         this.selectedMarca = null;
-        this.updatePesoTotalDisplay(0);
     }
 
-    calculatePesoTotal() {
-        const quantidade = parseInt(document.getElementById('quantidadeCaixas').value) || 0;
-        const pesoCaixa = this.selectedMarca ? this.selectedMarca.peso : 0;
-        const pesoTotal = quantidade * pesoCaixa;
-        
-        this.updatePesoTotalDisplay(pesoTotal);
-    }
-
-    updatePesoTotalDisplay(pesoTotal) {
-        document.getElementById('pesoTotalDisplay').textContent = `${pesoTotal.toFixed(1)} kg`;
-    }
 
     loadProducoesTable(producoesFiltradas = null) {
         const tbody = document.getElementById('productionTableBody');
@@ -331,7 +313,6 @@ class ProductionManager {
         document.getElementById('marcaProducao').value = producao.marcaNome;
         document.getElementById('quantidadeCaixas').value = producao.quantidade;
         
-        this.updatePesoTotalDisplay(producao.pesoTotal);
 
         // Rolar para o formulário
         document.querySelector('.production-form-section').scrollIntoView({ behavior: 'smooth' });
