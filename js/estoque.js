@@ -34,7 +34,6 @@ window.onclick = function(event) {
 async function loadMaterials() {
     try {
         materials = await window.packingHouseDB.getAllMaterials();
-        console.log('Materiais carregados:', materials.length, materials);
         renderMaterials();
         updateStats();
     } catch (error) {
@@ -60,35 +59,6 @@ async function loadAllData() {
         loadMaterials(),
         loadMovements()
     ]);
-    
-    // Se não houver materiais, criar alguns de teste
-    if (materials.length === 0) {
-        console.log('Nenhum material encontrado, criando materiais de teste...');
-        await createTestMaterials();
-    }
-}
-
-// Criar materiais de teste
-async function createTestMaterials() {
-    const testMaterials = [
-        { name: 'Caixa de Papelão', quantity: 100, unit: 'unidade' },
-        { name: 'Fita Adesiva', quantity: 50, unit: 'unidade' },
-        { name: 'Etiquetas', quantity: 200, unit: 'unidade' },
-        { name: 'Plástico Bolha', quantity: 30, unit: 'unidade' },
-        { name: 'Palete', quantity: 15, unit: 'unidade' }
-    ];
-    
-    try {
-        for (const material of testMaterials) {
-            await window.packingHouseDB.addMaterial(material);
-        }
-        console.log('Materiais de teste criados com sucesso');
-        
-        // Recarregar materiais após criar os de teste
-        await loadMaterials();
-    } catch (error) {
-        console.error('Erro ao criar materiais de teste:', error);
-    }
 }
 
 // === FUNÇÕES DE RENDERIZAÇÃO ===
@@ -252,7 +222,6 @@ async function addMaterial(nome, quantidade) {
         };
         
         const id = await window.packingHouseDB.addMaterial(material);
-        console.log('Material adicionado com ID:', id);
         
         // Recarregar dados
         await loadMaterials();
@@ -312,7 +281,6 @@ async function updateMaterial(id, nome, quantidade) {
         };
         
         await window.packingHouseDB.updateMaterial(id, updates);
-        console.log('Material atualizado:', id);
         
         // Recarregar dados
         await loadMaterials();
@@ -342,7 +310,6 @@ async function deleteMaterial(id) {
         }
         
         await window.packingHouseDB.deleteMaterial(id);
-        console.log('Material excluído:', id);
         
         // Recarregar dados
         await loadMaterials();
@@ -366,7 +333,6 @@ async function addMovement(materialName, type, quantity, date) {
         };
         
         await window.packingHouseDB.addMovement(movement);
-        console.log('Movimentação adicionada');
         
         // Recarregar dados
         await loadAllData();
@@ -643,8 +609,6 @@ async function updateStats() {
 // Buscar materiais
 function searchMaterials() {
     const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
-    console.log('Buscando materiais com termo:', searchTerm);
-    console.log('Materiais disponíveis:', materials.length, materials);
     
     if (!searchTerm) {
         renderMaterials();
@@ -654,11 +618,8 @@ function searchMaterials() {
     // Usar fuzzy matching para busca mais flexível
     const filteredMaterials = materials.filter(material => {
         const score = fuzzyMatch(searchTerm, material.name);
-        console.log(`Material: ${material.name}, Score: ${score}`);
         return score > 30; // Usar o mesmo threshold do autocomplete
     });
-    
-    console.log('Materiais filtrados:', filteredMaterials.length, filteredMaterials);
     
     // Ordenar por score de similaridade
     filteredMaterials.sort((a, b) => {
@@ -848,18 +809,14 @@ document.addEventListener('DOMContentLoaded', async function() {
     const waitForDB = async () => {
         while (attempts < maxAttempts) {
             attempts++;
-            console.log(`Tentativa ${attempts} de inicialização do banco de dados...`);
             
             if (window.packingHouseDB && window.packingHouseDB.db) {
-                console.log('Banco de dados está pronto!');
                 try {
                     // Carregar todos os dados
                     await loadAllData();
                     
                     // Configurar event listeners
                     setupEventListeners();
-                    
-                    console.log('Sistema de estoque inicializado com sucesso');
                     return;
                 } catch (error) {
                     console.error('Erro ao inicializar sistema:', error);
