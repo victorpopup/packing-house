@@ -1,19 +1,59 @@
 // Sistema de Gerenciamento de Produção
 class ProductionManager {
     constructor() {
-        this.marcas = this.loadMarcas();
-        this.producoes = this.loadProducoes();
+        this.marcas = [];
+        this.producoes = [];
         this.editingProducaoId = null;
         this.selectedMarcaId = null;
         this.selectedMarca = null;
+        this.dbReady = false;
         this.init();
     }
 
-    init() {
+    async init() {
+        // Esperar o banco de dados estar pronto
+        await this.waitForDatabase();
+        await this.loadData();
         this.setupEventListeners();
         this.populateFiltroMarcas();
         this.loadProducoesTable();
         this.setDefaultDate();
+    }
+
+    async waitForDatabase() {
+        console.log('🔄 Produção: Aguardando banco de dados...');
+        let attempts = 0;
+        while (!window.packingHouseDB || !window.packingHouseDB.db) {
+            attempts++;
+            if (attempts > 50) {
+                console.error('❌ Produção: Timeout aguardando banco de dados');
+                return;
+            }
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        this.dbReady = true;
+        console.log('✅ Produção: Banco de dados pronto!');
+    }
+
+    async loadData() {
+        try {
+            // Carregar marcas do IndexedDB
+            if (typeof window.packingHouseDB.getAllBrands === 'function') {
+                this.marcas = await window.packingHouseDB.getAllBrands();
+                console.log(`📦 Produção: ${this.marcas.length} marcas carregadas`);
+            } else {
+                console.warn('⚠️ Produção: getAllBrands não disponível, tentando localStorage');
+                this.marcas = this.loadMarcasFromStorage();
+            }
+
+            // Carregar produções (mantém do localStorage por enquanto)
+            this.producoes = this.loadProducoesFromStorage();
+            console.log(`📊 Produção: ${this.producoes.length} produções carregadas`);
+        } catch (error) {
+            console.error('❌ Produção: Erro ao carregar dados:', error);
+            this.marcas = [];
+            this.producoes = [];
+        }
     }
 
     setupEventListeners() {
@@ -83,8 +123,13 @@ class ProductionManager {
     }
 
     // Gerenciamento de Marcas
-    loadMarcas() {
+    loadMarcasFromStorage() {
         const data = localStorage.getItem('marcas');
+        return data ? JSON.parse(data) : [];
+    }
+
+    loadProducoesFromStorage() {
+        const data = localStorage.getItem('producoes');
         return data ? JSON.parse(data) : [];
     }
 
@@ -101,7 +146,7 @@ class ProductionManager {
     showMarcaSuggestions(query = '') {
         const suggestionsContainer = document.getElementById('marcaSuggestions');
         const filteredMarcas = this.marcas.filter(marca => 
-            marca.nome.toLowerCase().includes(query.toLowerCase())
+            (marca.name || marca.nome).toLowerCase().includes(query.toLowerCase())
         );
 
         if (filteredMarcas.length === 0) {
@@ -112,7 +157,7 @@ class ProductionManager {
 
         suggestionsContainer.innerHTML = filteredMarcas.map(marca => `
             <div class="marca-suggestion-item" data-marca-id="${marca.id}">
-                <span class="marca-suggestion-name">${marca.nome}</span>
+                <span class="marca-suggestion-name">${marca.name || marca.nome}</span>
                 <span class="marca-suggestion-peso">${marca.peso}kg</span>
             </div>
         `).join('');
@@ -139,7 +184,7 @@ class ProductionManager {
         this.selectedMarcaId = marcaId;
         this.selectedMarca = marca;
         
-        document.getElementById('marcaProducao').value = marca.nome;
+        document.getElementById('marcaProducao').value = marca.name || marca.nome;
         this.hideMarcaSuggestions();
     }
 
@@ -195,7 +240,7 @@ class ProductionManager {
         this.marcas.forEach(marca => {
             const option = document.createElement('option');
             option.value = marca.id;
-            option.textContent = marca.nome;
+            option.textContent = marca.name || marca.nome; // Compatibilidade com ambos os formatos
             select.appendChild(option);
         });
     }
@@ -226,7 +271,7 @@ class ProductionManager {
             id: this.editingProducaoId || this.generateId(),
             data,
             marcaId: this.selectedMarcaId,
-            marcaNome: marca.nome,
+            marcaNome: marca.name || marca.nome,
             quantidade,
             pesoCaixa: marca.peso,
             pesoTotal,
@@ -452,5 +497,8 @@ document.head.appendChild(style);
 // Inicializar o sistema
 let productionManager;
 document.addEventListener('DOMContentLoaded', () => {
-    productionManager = new ProductionManager();
+    // Pequeno delay para garantir que o banco de dados esteja disponível
+    setTimeout(() => {
+        productionManager = new ProductionManager();
+    }, 500);
 });
