@@ -86,11 +86,13 @@ class PackingHouseDB {
     // Obter todos os materiais
     async getAllMaterials() {
         return new Promise((resolve, reject) => {
+            console.log('Buscando todos os materiais no banco de dados...');
             const transaction = this.db.transaction(['materials'], 'readonly');
             const store = transaction.objectStore('materials');
             const request = store.getAll();
 
             request.onsuccess = () => {
+                console.log('Materiais encontrados no banco:', request.result.length, request.result);
                 resolve(request.result);
             };
 

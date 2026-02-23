@@ -33,9 +33,12 @@ window.onclick = function(event) {
 // Carregar materiais do banco de dados
 async function loadMaterials() {
     try {
+        console.log('Iniciando carregamento de materiais...');
         materials = await window.packingHouseDB.getAllMaterials();
+        console.log('Materiais recebidos do banco:', materials.length, materials);
         renderMaterials();
         updateStats();
+        console.log('Materiais renderizados com sucesso');
     } catch (error) {
         console.error('Erro ao carregar materiais:', error);
         showError('Erro ao carregar materiais do banco de dados');
@@ -65,8 +68,16 @@ async function loadAllData() {
 
 // Renderizar materiais na interface
 function renderMaterials(materialsToRender = materials) {
+    console.log('Renderizando materiais:', materialsToRender.length, materialsToRender);
+    
     const materialsGrid = document.getElementById('materialsGrid');
     const table = document.querySelector('.data-table tbody');
+    
+    console.log('Elementos encontrados:', {
+        materialsGrid: !!materialsGrid,
+        table: !!table,
+        materialsGridId: materialsGrid?.id
+    });
     
     // Limpar conteúdo atual
     materialsGrid.innerHTML = '';
@@ -74,6 +85,7 @@ function renderMaterials(materialsToRender = materials) {
     
     // Renderizar cada material
     materialsToRender.forEach(material => {
+        console.log('Renderizando material:', material);
         // Criar card
         const card = createMaterialCard(material);
         materialsGrid.appendChild(card);
@@ -82,6 +94,8 @@ function renderMaterials(materialsToRender = materials) {
         const row = createMaterialTableRow(material);
         table.appendChild(row);
     });
+    
+    console.log('Renderização concluída');
 }
 
 // Criar card de material
@@ -799,41 +813,80 @@ function showError(message) {
     }, 5000);
 }
 
-// === INICIALIZAÇÃO ===
-
-document.addEventListener('DOMContentLoaded', async function() {
-    // Esperar o banco de dados estar pronto
-    let attempts = 0;
-    const maxAttempts = 10;
+// Função de teste para debug
+async function testDatabase() {
+    console.log('=== INICIANDO TESTE DO BANCO DE DADOS ===');
     
-    const waitForDB = async () => {
-        while (attempts < maxAttempts) {
-            attempts++;
-            
-            if (window.packingHouseDB && window.packingHouseDB.db) {
-                try {
-                    // Carregar todos os dados
-                    await loadAllData();
-                    
-                    // Configurar event listeners
-                    setupEventListeners();
-                    return;
-                } catch (error) {
-                    console.error('Erro ao inicializar sistema:', error);
-                    showError('Erro ao inicializar sistema de estoque');
-                    return;
-                }
-            }
-            
-            // Esperar um pouco antes da próxima tentativa
-            await new Promise(resolve => setTimeout(resolve, 500));
+    try {
+        // Verificar se o banco está disponível
+        if (!window.packingHouseDB) {
+            console.error('packingHouseDB não encontrado');
+            return;
         }
         
-        console.error('Não foi possível inicializar o banco de dados após várias tentativas');
-        showError('Erro ao conectar com o banco de dados. Recarregue a página.');
-    };
+        if (!window.packingHouseDB.db) {
+            console.error('Banco de dados não inicializado');
+            return;
+        }
+        
+        console.log('Banco de dados OK:', window.packingHouseDB.db);
+        
+        // Tentar obter materiais diretamente
+        const allMaterials = await window.packingHouseDB.getAllMaterials();
+        console.log('Materiais obtidos diretamente:', allMaterials.length, allMaterials);
+        
+        // Verificar variável global
+        console.log('Variável materials:', materials.length, materials);
+        
+        // Tentar renderizar manualmente
+        if (allMaterials.length > 0) {
+            materials = allMaterials;
+            renderMaterials();
+        }
+        
+    } catch (error) {
+        console.error('Erro no teste:', error);
+    }
+}
+
+// Adicionar função global para teste no console
+window.testDatabase = testDatabase;
+
+document.addEventListener('DOMContentLoaded', async function() {
+    console.log('DOM carregado, iniciando sistema de estoque...');
     
-    waitForDB();
+    // Esperar um pouco e depois verificar o banco
+    setTimeout(async () => {
+        console.log('Verificando banco de dados após delay...');
+        
+        if (!window.packingHouseDB) {
+            console.error('packingHouseDB não encontrado');
+            showError('Erro: banco de dados não encontrado. Recarregue a página.');
+            return;
+        }
+        
+        if (!window.packingHouseDB.db) {
+            console.error('Banco de dados não inicializado, tentando inicializar...');
+            try {
+                await window.packingHouseDB.init();
+                console.log('Banco de dados inicializado manualmente');
+            } catch (error) {
+                console.error('Falha ao inicializar banco:', error);
+                showError('Erro ao inicializar banco de dados. Recarregue a página.');
+                return;
+            }
+        }
+        
+        // Agora carregar os dados
+        try {
+            await loadAllData();
+            setupEventListeners();
+            console.log('Sistema de estoque inicializado com sucesso');
+        } catch (error) {
+            console.error('Erro ao carregar dados:', error);
+            showError('Erro ao carregar dados do estoque');
+        }
+    }, 1000);
 });
 
 function setupEventListeners() {
