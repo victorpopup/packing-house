@@ -1,0 +1,68 @@
+/* Variáveis CSS - Packing House */
+:root {
+    /* Cores Principais */
+    --primary-color: #667eea;
+    --secondary-color: #764ba2;
+    --accent-color: #f093fb;
+    
+    /* Cores de Fundo */
+    --dark-bg: #1a1a2e;
+    --card-bg: rgba(45, 55, 72, 0.8);
+    --modal-bg: rgba(26, 26, 46, 0.95);
+    
+    /* Cores de Texto */
+    --text-primary: #e8e8e8;
+    --text-secondary: #b8b8b8;
+    --text-muted: #888888;
+    
+    /* Cores de Status */
+    --success-color: #48bb78;
+    --warning-color: #f6ad55;
+    --error-color: #fc8181;
+    --info-color: #4299e1;
+    
+    /* Bordas e Sombras */
+    --border-color: rgba(102, 126, 234, 0.2);
+    --border-hover: rgba(102, 126, 234, 0.4);
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 8px 25px rgba(102, 126, 234, 0.3);
+    --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.2);
+    
+    /* Espaçamento */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 3rem;
+    
+    /* Border Radius */
+    --radius-sm: 0.25rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.5rem;
+    --radius-2xl: 2rem;
+    
+    /* Tipografia */
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.875rem;
+    --font-size-base: 1rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.25rem;
+    --font-size-2xl: 1.5rem;
+    --font-size-3xl: 1.875rem;
+    --font-size-4xl: 2.25rem;
+    
+    /* Transições */
+    --transition-fast: 0.15s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+    
+    /* Z-index */
+    --z-dropdown: 1000;
+    --z-modal: 1050;
+    --z-tooltip: 1100;
+    --z-fixed: 1200;
+}

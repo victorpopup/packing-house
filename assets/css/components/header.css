@@ -1,0 +1,49 @@
+/* Header Component Styles */
+.logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-md);
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-lg);
+}
+
+.logo-img {
+    height: 40px;
+    width: auto;
+    transition: transform var(--transition-normal);
+}
+
+.logo-img:hover {
+    transform: scale(1.05);
+}
+
+.logo-text {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+@media (max-width: 768px) {
+    .logo-container {
+        padding: 0 var(--spacing-md);
+    }
+    
+    .logo-text {
+        font-size: var(--font-size-xl);
+    }
+}
+
+@media (max-width: 480px) {
+    .logo-img {
+        height: 32px;
+    }
+    
+    .logo-text {
+        font-size: var(--font-size-lg);
+    }
+}

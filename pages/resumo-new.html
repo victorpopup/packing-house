@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Packing House - Sistema</title>
+    
+    <!-- CSS Principal com todos os módulos -->
+    <link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+    <!-- Header Component -->
+    <header id="header-component"></header>
+
+    <main class="page-content">
+        <!-- Seção de Boas-vindas -->
+        <section class="welcome-section">
+            <h2>Painel Principal</h2>
+            <p>Bem-vindo ao sistema Packing House</p>
+        </section>
+
+        <!-- Estatísticas Gerais -->
+        <section class="stats-summary">
+            <h2>Estatísticas Gerais</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalStock">1,234</div>
+                    <div class="stat-label">Total em Estoque</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="totalItems">45</div>
+                    <div class="stat-label">Itens Cadastrados</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="lowStock">8</div>
+                    <div class="stat-label">Estoque Baixo</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ações Rápidas -->
+        <section class="quick-actions">
+            <a href="estoque.html" class="action-card">
+                <div class="action-icon">📦</div>
+                <div class="action-title">Gerenciar Estoque</div>
+                <div class="action-description">Controle completo de materiais e produtos</div>
+            </a>
+            <a href="producao.html" class="action-card">
+                <div class="action-icon">🏭</div>
+                <div class="action-title">Produção</div>
+                <div class="action-description">Registre e acompanhe a produção diária</div>
+            </a>
+            <a href="configuracao.html" class="action-card">
+                <div class="action-icon">⚙️</div>
+                <div class="action-title">Configurações</div>
+                <div class="action-description">Personalize o sistema conforme suas necessidades</div>
+            </a>
+            <a href="#" class="action-card" id="backupBtn">
+                <div class="action-icon">💾</div>
+                <div class="action-title">Backup</div>
+                <div class="action-description">Faça backup dos seus dados</div>
+            </a>
+        </section>
+    </main>
+
+    <!-- Navigation Component -->
+    <nav id="navigation-component"></nav>
+
+    <!-- Scripts Modulares -->
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/modules/utils.js"></script>
+    <script src="../assets/js/modules/database.js"></script>
+    <script src="../assets/js/modules/navigation.js"></script>
+    
+    <!-- Script da Página -->
+    <script>
+        // Script específico da página resumo
+        document.addEventListener('app:initialized', async () => {
+            console.log('Página resumo inicializada');
+            
+            // Carrega componentes
+            await loadComponents();
+            
+            // Carrega estatísticas
+            await loadStatistics();
+            
+            // Configura eventos
+            setupEvents();
+        });
+
+        /**
+         * Carrega os componentes HTML
+         */
+        async function loadComponents() {
+            try {
+                // Carrega header
+                const headerResponse = await fetch('../components/header.html');
+                const headerHTML = await headerResponse.text();
+                document.getElementById('header-component').innerHTML = headerHTML;
+                
+                // Carrega navegação
+                const navResponse = await fetch('../components/navigation.html');
+                const navHTML = await navResponse.text();
+                document.getElementById('navigation-component').innerHTML = navHTML;
+                
+                console.log('Componentes carregados com sucesso');
+            } catch (error) {
+                console.error('Erro ao carregar componentes:', error);
+            }
+        }
+
+        /**
+         * Carrega estatísticas do banco de dados
+         */
+        async function loadStatistics() {
+            try {
+                const db = window.PackingHouse.getModule('database');
+                if (!db) {
+                    console.warn('Módulo de banco não disponível');
+                    return;
+                }
+
+                // Obtém estatísticas reais
+                const materials = await db.getAll('materials');
+                const movements = await db.getAll('movements');
+                
+                // Calcula totais
+                const totalQuantity = materials.reduce((sum, material) => sum + (material.quantity || 0), 0);
+                const totalItems = materials.length;
+                const lowStockItems = materials.filter(material => (material.quantity || 0) < 10).length;
+                
+                // Atualiza UI
+                document.getElementById('totalStock').textContent = Utils.formatNumber(totalQuantity, 0);
+                document.getElementById('totalItems').textContent = Utils.formatNumber(totalItems, 0);
+                document.getElementById('lowStock').textContent = Utils.formatNumber(lowStockItems, 0);
+                
+                console.log('Estatísticas carregadas:', { totalQuantity, totalItems, lowStockItems });
+            } catch (error) {
+                console.error('Erro ao carregar estatísticas:', error);
+            }
+        }
+
+        /**
+         * Configura eventos da página
+         */
+        function setupEvents() {
+            // Botão de backup
+            const backupBtn = document.getElementById('backupBtn');
+            if (backupBtn) {
+                backupBtn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    await performBackup();
+                });
+            }
+        }
+
+        /**
+         * Realiza backup dos dados
+         */
+        async function performBackup() {
+            try {
+                const db = window.PackingHouse.getModule('database');
+                if (!db) {
+                    alert('Módulo de banco não disponível');
+                    return;
+                }
+
+                // Mostra loading
+                const btn = document.getElementById('backupBtn');
+                const originalContent = btn.innerHTML;
+                btn.innerHTML = '<div class="loading-spinner"></div> Processando...';
+                btn.style.pointerEvents = 'none';
+
+                // Exporta dados
+                const backup = {
+                    version: '1.0.0',
+                    timestamp: new Date().toISOString(),
+                    data: {
+                        materials: await db.export('materials'),
+                        movements: await db.export('movements'),
+                        production: await db.export('production'),
+                        settings: await db.export('settings')
+                    }
+                };
+
+                // Download do backup
+                const filename = `packing-house-backup-${Utils.formatDate(new Date(), 'short').replace(/\//g, '-')}.json`;
+                Utils.downloadFile(JSON.stringify(backup, null, 2), filename, 'application/json');
+
+                // Restaura botão
+                btn.innerHTML = originalContent;
+                btn.style.pointerEvents = 'auto';
+
+                alert('Backup realizado com sucesso!');
+            } catch (error) {
+                console.error('Erro ao realizar backup:', error);
+                alert('Erro ao realizar backup. Verifique o console para detalhes.');
+                
+                // Restaura botão
+                const btn = document.getElementById('backupBtn');
+                btn.innerHTML = originalContent;
+                btn.style.pointerEvents = 'auto';
+            }
+        }
+
+        // Atualiza estatísticas periodicamente
+        setInterval(async () => {
+            if (document.visibilityState === 'visible') {
+                await loadStatistics();
+            }
+        }, 30000); // Atualiza a cada 30 segundos
+    </script>
+</body>
+</html>
