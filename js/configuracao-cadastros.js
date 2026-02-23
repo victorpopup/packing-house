@@ -1,18 +1,68 @@
 // Sistema de Gerenciamento de Cadastros na Configuração
 class ConfiguracaoCadastrosManager {
     constructor() {
-        this.materiais = this.loadMateriais();
-        this.marcas = this.loadMarcas();
+        this.materiais = [];
+        this.marcas = [];
         this.editingMaterialId = null;
         this.editingMarcaId = null;
+        this.dbReady = false;
         this.init();
     }
 
-    init() {
+    async init() {
+        // Esperar o banco de dados estar pronto
+        await this.waitForDatabase();
         this.setupEventListeners();
-        this.loadMaterialsList();
-        this.loadMarcasList();
+        await this.loadData();
         this.updateStatus();
+    }
+
+    async waitForDatabase() {
+        console.log('Aguardando banco de dados ficar pronto...');
+        let attempts = 0;
+        while (!window.packingHouseDB || !window.packingHouseDB.db) {
+            attempts++;
+            if (attempts > 50) { // Timeout após 5 segundos
+                console.error('Timeout aguardando banco de dados');
+                throw new Error('Banco de dados não ficou pronto a tempo');
+            }
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        console.log('Banco de dados está pronto!');
+        this.dbReady = true;
+    }
+
+    async loadData() {
+        try {
+            // Carregar materiais
+            try {
+                this.materiais = await window.packingHouseDB.getAllMaterials();
+                console.log('Materiais carregados:', this.materiais.length);
+            } catch (error) {
+                console.error('Erro ao carregar materiais:', error);
+                this.materiais = [];
+            }
+
+            // Carregar marcas (verificando se o método existe)
+            try {
+                if (typeof window.packingHouseDB.getAllBrands === 'function') {
+                    this.marcas = await window.packingHouseDB.getAllBrands();
+                    console.log('Marcas carregadas:', this.marcas.length);
+                } else {
+                    console.log('Método getAllBrands não encontrado, usando array vazio');
+                    this.marcas = [];
+                }
+            } catch (error) {
+                console.error('Erro ao carregar marcas:', error);
+                this.marcas = [];
+            }
+
+            this.loadMaterialsList();
+            this.loadMarcasList();
+        } catch (error) {
+            console.error('Erro geral ao carregar dados:', error);
+            this.showMessage('Erro ao carregar dados do banco de dados', 'error');
+        }
     }
 
     setupEventListeners() {
@@ -40,18 +90,28 @@ class ConfiguracaoCadastrosManager {
     }
 
     // Gerenciamento de Materiais
-    loadMateriais() {
-        const data = localStorage.getItem('materiais');
-        return data ? JSON.parse(data) : [];
+    async loadMateriais() {
+        if (!this.dbReady) return [];
+        try {
+            return await window.packingHouseDB.getAllMaterials();
+        } catch (error) {
+            console.error('Erro ao carregar materiais:', error);
+            return [];
+        }
     }
 
-    saveMateriais() {
-        localStorage.setItem('materiais', JSON.stringify(this.materiais));
+    async saveMateriais() {
+        // Dados são salvos diretamente no IndexedDB através das operações individuais
         this.loadMaterialsList();
         this.updateStatus();
     }
 
-    handleMaterialSubmit() {
+    async handleMaterialSubmit() {
+        if (!this.dbReady) {
+            this.showMessage('Banco de dados não está pronto', 'error');
+            return;
+        }
+
         const nome = document.getElementById('materialNome').value.trim();
         const quantidade = parseInt(document.getElementById('materialQuantidade').value);
 
@@ -60,33 +120,29 @@ class ConfiguracaoCadastrosManager {
             return;
         }
 
-        if (this.editingMaterialId) {
-            // Editar material existente
-            const index = this.materiais.findIndex(m => m.id === this.editingMaterialId);
-            if (index !== -1) {
-                this.materiais[index] = {
-                    ...this.materiais[index],
-                    nome,
-                    quantidade,
-                    updatedAt: new Date().toISOString()
-                };
+        try {
+            if (this.editingMaterialId) {
+                // Editar material existente
+                await window.packingHouseDB.updateMaterial(this.editingMaterialId, {
+                    name: nome,
+                    quantity: quantidade
+                });
                 this.showMessage('Material atualizado com sucesso', 'success');
+            } else {
+                // Adicionar novo material
+                await window.packingHouseDB.addMaterial({
+                    name: nome,
+                    quantity: quantidade
+                });
+                this.showMessage('Material cadastrado com sucesso', 'success');
             }
-        } else {
-            // Adicionar novo material
-            const novoMaterial = {
-                id: this.generateId(),
-                nome,
-                quantidade,
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString()
-            };
-            this.materiais.push(novoMaterial);
-            this.showMessage('Material cadastrado com sucesso', 'success');
-        }
 
-        this.saveMateriais();
-        this.closeMaterialsModal();
+            await this.loadData();
+            this.closeMaterialsModal();
+        } catch (error) {
+            console.error('Erro ao salvar material:', error);
+            this.showMessage('Erro ao salvar material: ' + error.message, 'error');
+        }
     }
 
     loadMaterialsList() {
@@ -103,8 +159,8 @@ class ConfiguracaoCadastrosManager {
             item.className = 'marca-item'; // Reutilizando estilo
             item.innerHTML = `
                 <div class="marca-info">
-                    <div class="marca-nome">${material.nome}</div>
-                    <div class="marca-peso">Quantidade: ${material.quantidade}</div>
+                    <div class="marca-nome">${material.name}</div>
+                    <div class="marca-peso">Quantidade: ${material.quantity}</div>
                 </div>
                 <div class="marca-actions">
                     <button class="btn btn-warning btn-small" onclick="configuracaoCadastrosManager.editMaterial('${material.id}')">Editar</button>
@@ -115,39 +171,66 @@ class ConfiguracaoCadastrosManager {
         });
     }
 
-    editMaterial(id) {
-        const material = this.materiais.find(m => m.id === id);
-        if (!material) return;
-
-        this.editingMaterialId = id;
-        document.getElementById('materialNome').value = material.nome;
-        document.getElementById('materialQuantidade').value = material.quantidade;
+    async editMaterial(id) {
+        if (!this.dbReady) return;
         
-        // Atualizar título do modal
-        document.querySelector('#materialsModal .modal-header h3').textContent = 'Editar Material';
+        try {
+            const material = await window.packingHouseDB.getMaterial(id);
+            if (!material) return;
+
+            this.editingMaterialId = id;
+            document.getElementById('materialNome').value = material.name;
+            document.getElementById('materialQuantidade').value = material.quantity;
+            
+            // Atualizar título do modal
+            document.querySelector('#materialsModal .modal-header h3').textContent = 'Editar Material';
+        } catch (error) {
+            console.error('Erro ao carregar material para edição:', error);
+            this.showMessage('Erro ao carregar material para edição', 'error');
+        }
     }
 
-    deleteMaterial(id) {
+    async deleteMaterial(id) {
         if (!confirm('Tem certeza que deseja excluir este material?')) return;
+        
+        if (!this.dbReady) {
+            this.showMessage('Banco de dados não está pronto', 'error');
+            return;
+        }
 
-        this.materiais = this.materiais.filter(m => m.id !== id);
-        this.saveMateriais();
-        this.showMessage('Material excluído com sucesso', 'success');
+        try {
+            await window.packingHouseDB.deleteMaterial(id);
+            await this.loadData();
+            this.showMessage('Material excluído com sucesso', 'success');
+        } catch (error) {
+            console.error('Erro ao excluir material:', error);
+            this.showMessage('Erro ao excluir material: ' + error.message, 'error');
+        }
     }
 
     // Gerenciamento de Marcas
-    loadMarcas() {
-        const data = localStorage.getItem('marcas');
-        return data ? JSON.parse(data) : [];
+    async loadMarcas() {
+        if (!this.dbReady) return [];
+        try {
+            return await window.packingHouseDB.getAllBrands();
+        } catch (error) {
+            console.error('Erro ao carregar marcas:', error);
+            return [];
+        }
     }
 
-    saveMarcas() {
-        localStorage.setItem('marcas', JSON.stringify(this.marcas));
+    async saveMarcas() {
+        // Dados são salvos diretamente no IndexedDB através das operações individuais
         this.loadMarcasList();
         this.updateStatus();
     }
 
-    handleMarcaSubmit() {
+    async handleMarcaSubmit() {
+        if (!this.dbReady) {
+            this.showMessage('Banco de dados não está pronto', 'error');
+            return;
+        }
+
         const nome = document.getElementById('nomeMarcaConfig').value.trim();
         const peso = parseFloat(document.getElementById('pesoMarcaConfig').value);
 
@@ -156,33 +239,29 @@ class ConfiguracaoCadastrosManager {
             return;
         }
 
-        if (this.editingMarcaId) {
-            // Editar marca existente
-            const index = this.marcas.findIndex(m => m.id === this.editingMarcaId);
-            if (index !== -1) {
-                this.marcas[index] = {
-                    ...this.marcas[index],
-                    nome,
-                    peso,
-                    updatedAt: new Date().toISOString()
-                };
+        try {
+            if (this.editingMarcaId) {
+                // Editar marca existente
+                await window.packingHouseDB.updateBrand(this.editingMarcaId, {
+                    name: nome,
+                    peso: peso
+                });
                 this.showMessage('Marca atualizada com sucesso', 'success');
+            } else {
+                // Adicionar nova marca
+                await window.packingHouseDB.addBrand({
+                    name: nome,
+                    peso: peso
+                });
+                this.showMessage('Marca cadastrada com sucesso', 'success');
             }
-        } else {
-            // Adicionar nova marca
-            const novaMarca = {
-                id: this.generateId(),
-                nome,
-                peso,
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString()
-            };
-            this.marcas.push(novaMarca);
-            this.showMessage('Marca cadastrada com sucesso', 'success');
-        }
 
-        this.saveMarcas();
-        this.closeMarcasModal();
+            await this.loadData();
+            this.closeMarcasModal();
+        } catch (error) {
+            console.error('Erro ao salvar marca:', error);
+            this.showMessage('Erro ao salvar marca: ' + error.message, 'error');
+        }
     }
 
     loadMarcasList() {
@@ -199,7 +278,7 @@ class ConfiguracaoCadastrosManager {
             item.className = 'marca-item';
             item.innerHTML = `
                 <div class="marca-info">
-                    <div class="marca-nome">${marca.nome}</div>
+                    <div class="marca-nome">${marca.name}</div>
                     <div class="marca-peso">Peso: ${marca.peso}kg por caixa</div>
                 </div>
                 <div class="marca-actions">
@@ -211,33 +290,50 @@ class ConfiguracaoCadastrosManager {
         });
     }
 
-    editMarca(id) {
-        const marca = this.marcas.find(m => m.id === id);
-        if (!marca) return;
-
-        this.editingMarcaId = id;
-        document.getElementById('nomeMarcaConfig').value = marca.nome;
-        document.getElementById('pesoMarcaConfig').value = marca.peso;
+    async editMarca(id) {
+        if (!this.dbReady) return;
         
-        // Atualizar título do modal
-        document.querySelector('#marcasModal .modal-header h3').textContent = 'Editar Marca';
+        try {
+            const marca = await window.packingHouseDB.getBrand(id);
+            if (!marca) return;
+
+            this.editingMarcaId = id;
+            document.getElementById('nomeMarcaConfig').value = marca.name;
+            document.getElementById('pesoMarcaConfig').value = marca.peso;
+            
+            // Atualizar título do modal
+            document.querySelector('#marcasModal .modal-header h3').textContent = 'Editar Marca';
+        } catch (error) {
+            console.error('Erro ao carregar marca para edição:', error);
+            this.showMessage('Erro ao carregar marca para edição', 'error');
+        }
     }
 
-    deleteMarca(id) {
+    async deleteMarca(id) {
         if (!confirm('Tem certeza que deseja excluir esta marca?')) return;
-
-        // Verificar se há produções vinculadas
-        const producoes = JSON.parse(localStorage.getItem('producoes') || '[]');
-        const producoesVinculadas = producoes.filter(p => p.marcaId === id);
         
-        if (producoesVinculadas.length > 0) {
-            this.showMessage('Não é possível excluir marca com produções registradas', 'error');
+        if (!this.dbReady) {
+            this.showMessage('Banco de dados não está pronto', 'error');
             return;
         }
 
-        this.marcas = this.marcas.filter(m => m.id !== id);
-        this.saveMarcas();
-        this.showMessage('Marca excluída com sucesso', 'success');
+        try {
+            // Verificar se há produções vinculadas
+            const productions = await window.packingHouseDB.getAllMovements();
+            const producoesVinculadas = productions.filter(p => p.brandId === id);
+            
+            if (producoesVinculadas.length > 0) {
+                this.showMessage('Não é possível excluir marca com produções registradas', 'error');
+                return;
+            }
+
+            await window.packingHouseDB.deleteBrand(id);
+            await this.loadData();
+            this.showMessage('Marca excluída com sucesso', 'success');
+        } catch (error) {
+            console.error('Erro ao excluir marca:', error);
+            this.showMessage('Erro ao excluir marca: ' + error.message, 'error');
+        }
     }
 
     // Controle de Modais

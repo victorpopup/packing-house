@@ -2,7 +2,7 @@
 class PackingHouseDB {
     constructor() {
         this.dbName = 'PackingHouseDB';
-        this.dbVersion = 1;
+        this.dbVersion = 2; // Incrementado para forçar atualização
         this.db = null;
     }
 
@@ -23,6 +23,7 @@ class PackingHouseDB {
             };
 
             request.onupgradeneeded = (event) => {
+                console.log('Atualizando banco de dados para versão:', event.newVersion);
                 const db = event.target.result;
 
                 // Criar tabela de materiais
@@ -33,6 +34,7 @@ class PackingHouseDB {
                     });
                     materialsStore.createIndex('name', 'name', { unique: true });
                     materialsStore.createIndex('status', 'status', { unique: false });
+                    console.log('Tabela materials criada');
                 }
 
                 // Criar tabela de movimentações
@@ -44,14 +46,26 @@ class PackingHouseDB {
                     movementsStore.createIndex('materialName', 'materialName', { unique: false });
                     movementsStore.createIndex('type', 'type', { unique: false });
                     movementsStore.createIndex('date', 'date', { unique: false });
+                    console.log('Tabela movements criada');
+                }
+
+                // Criar tabela de marcas
+                if (!db.objectStoreNames.contains('brands')) {
+                    const brandsStore = db.createObjectStore('brands', { 
+                        keyPath: 'id', 
+                        autoIncrement: true 
+                    });
+                    brandsStore.createIndex('name', 'name', { unique: true });
+                    console.log('Tabela brands criada');
                 }
 
                 // Criar tabela de configurações
                 if (!db.objectStoreNames.contains('settings')) {
                     db.createObjectStore('settings', { keyPath: 'key' });
+                    console.log('Tabela settings criada');
                 }
 
-                console.log('Estrutura do banco de dados criada');
+                console.log('Estrutura do banco de dados atualizada');
             };
         });
     }
@@ -199,6 +213,146 @@ class PackingHouseDB {
 
             request.onerror = (event) => {
                 console.error('Erro ao excluir material:', event.target.error);
+                reject(event.target.error);
+            };
+        });
+    }
+
+    // === OPERAÇÕES COM MARCAS ===
+
+    // Adicionar marca
+    async addBrand(brand) {
+        return new Promise((resolve, reject) => {
+            const transaction = this.db.transaction(['brands'], 'readwrite');
+            const store = transaction.objectStore('brands');
+            
+            brand.createdAt = new Date().toISOString();
+            brand.updatedAt = new Date().toISOString();
+
+            const request = store.add(brand);
+
+            request.onsuccess = () => {
+                console.log('Marca adicionada:', brand);
+                resolve(request.result);
+            };
+
+            request.onerror = (event) => {
+                console.error('Erro ao adicionar marca:', event.target.error);
+                reject(event.target.error);
+            };
+        });
+    }
+
+    // Obter todas as marcas
+    async getAllBrands() {
+        return new Promise((resolve, reject) => {
+            const transaction = this.db.transaction(['brands'], 'readonly');
+            const store = transaction.objectStore('brands');
+            const request = store.getAll();
+
+            request.onsuccess = () => {
+                console.log('Marcas encontradas no banco:', request.result.length, request.result);
+                resolve(request.result);
+            };
+
+            request.onerror = (event) => {
+                console.error('Erro ao obter marcas:', event.target.error);
+                reject(event.target.error);
+            };
+        });
+    }
+
+    // Obter marca por ID
+    async getBrand(id) {
+        return new Promise((resolve, reject) => {
+            const transaction = this.db.transaction(['brands'], 'readonly');
+            const store = transaction.objectStore('brands');
+            const request = store.get(id);
+
+            request.onsuccess = () => {
+                resolve(request.result);
+            };
+
+            request.onerror = (event) => {
+                console.error('Erro ao obter marca:', event.target.error);
+                reject(event.target.error);
+            };
+        });
+    }
+
+    // Obter marca por nome
+    async getBrandByName(name) {
+        return new Promise((resolve, reject) => {
+            const transaction = this.db.transaction(['brands'], 'readonly');
+            const store = transaction.objectStore('brands');
+            const index = store.index('name');
+            const request = index.get(name);
+
+            request.onsuccess = () => {
+                resolve(request.result);
+            };
+
+            request.onerror = (event) => {
+                console.error('Erro ao obter marca por nome:', event.target.error);
+                reject(event.target.error);
+            };
+        });
+    }
+
+    // Atualizar marca
+    async updateBrand(id, updates) {
+        return new Promise((resolve, reject) => {
+            const transaction = this.db.transaction(['brands'], 'readwrite');
+            const store = transaction.objectStore('brands');
+            
+            // Primeiro obter a marca atual
+            const getRequest = store.get(id);
+            
+            getRequest.onsuccess = () => {
+                const brand = getRequest.result;
+                if (!brand) {
+                    reject(new Error('Marca não encontrada'));
+                    return;
+                }
+
+                // Atualizar campos
+                Object.assign(brand, updates);
+                brand.updatedAt = new Date().toISOString();
+
+                const updateRequest = store.put(brand);
+
+                updateRequest.onsuccess = () => {
+                    console.log('Marca atualizada:', brand);
+                    resolve(brand);
+                };
+
+                updateRequest.onerror = (event) => {
+                    console.error('Erro ao atualizar marca:', event.target.error);
+                    reject(event.target.error);
+                };
+            };
+
+            getRequest.onerror = (event) => {
+                console.error('Erro ao obter marca para atualização:', event.target.error);
+                reject(event.target.error);
+            };
+        });
+    }
+
+    // Excluir marca
+    async deleteBrand(id) {
+        return new Promise((resolve, reject) => {
+            const transaction = this.db.transaction(['brands'], 'readwrite');
+            const store = transaction.objectStore('brands');
+            const request = store.delete(id);
+
+            request.onsuccess = () => {
+                console.log('Marca excluída:', id);
+                resolve(id);
+            };
+
+            request.onerror = (event) => {
+                console.error('Erro ao excluir marca:', event.target.error);
                 reject(event.target.error);
             };
         });
@@ -435,14 +589,16 @@ class PackingHouseDB {
     // Limpar banco de dados (para testes)
     async clearAll() {
         return new Promise((resolve, reject) => {
-            const transaction = this.db.transaction(['materials', 'movements', 'settings'], 'readwrite');
+            const transaction = this.db.transaction(['materials', 'movements', 'brands', 'settings'], 'readwrite');
             
             const materialsStore = transaction.objectStore('materials');
             const movementsStore = transaction.objectStore('movements');
+            const brandsStore = transaction.objectStore('brands');
             const settingsStore = transaction.objectStore('settings');
 
             materialsStore.clear();
             movementsStore.clear();
+            brandsStore.clear();
             settingsStore.clear();
 
             transaction.oncomplete = () => {
@@ -462,10 +618,12 @@ class PackingHouseDB {
         try {
             const materials = await this.getAllMaterials();
             const movements = await this.getAllMovements();
+            const brands = await this.getAllBrands();
             
             return {
                 materials,
                 movements,
+                brands,
                 exportDate: new Date().toISOString()
             };
         } catch (error) {
@@ -491,6 +649,13 @@ class PackingHouseDB {
             if (data.movements && Array.isArray(data.movements)) {
                 for (const movement of data.movements) {
                     await this.addMovement(movement);
+                }
+            }
+
+            // Importar marcas
+            if (data.brands && Array.isArray(data.brands)) {
+                for (const brand of data.brands) {
+                    await this.addBrand(brand);
                 }
             }
 
