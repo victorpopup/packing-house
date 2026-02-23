@@ -125,14 +125,16 @@ class ConfiguracaoCadastrosManager {
                 // Editar material existente
                 await window.packingHouseDB.updateMaterial(this.editingMaterialId, {
                     name: nome,
-                    quantity: quantidade
+                    quantity: quantidade,
+                    unit: 'unidade'
                 });
                 this.showMessage('Material atualizado com sucesso', 'success');
             } else {
                 // Adicionar novo material
                 await window.packingHouseDB.addMaterial({
                     name: nome,
-                    quantity: quantidade
+                    quantity: quantidade,
+                    unit: 'unidade'
                 });
                 this.showMessage('Material cadastrado com sucesso', 'success');
             }

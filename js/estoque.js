@@ -134,7 +134,7 @@ function createMaterialTableRow(material) {
     row.innerHTML = `
         <td data-label="Material">${material.name}</td>
         <td data-label="Quantidade">${material.quantity}</td>
-        <td data-label="Unidade">${material.unit}</td>
+        <td data-label="Unidade">${material.unit || 'unidade'}</td>
         <td data-label="Status"><span class="${statusClass}">${material.status}</span></td>
         <td data-label="Ações">
             <button class="btn-edit" onclick="editMaterial(${material.id})">Editar</button>
