@@ -82,15 +82,16 @@
     top: 100%;
     left: 0;
     right: 0;
-    background: rgba(30, 41, 59, 0.95);
-    border: 1px solid rgba(102, 126, 234, 0.3);
-    border-radius: 6px;
+    background: rgba(30, 41, 59, 0.98);
+    border: 2px solid rgba(102, 126, 234, 0.5);
+    border-radius: 8px;
     margin-top: 4px;
-    max-height: 200px;
+    max-height: 250px;
     overflow-y: auto;
-    z-index: 1000;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    z-index: 10000;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    display: none; /* Garantir que esteja oculto por padrão */
 }
 
 .marca-suggestion-item {

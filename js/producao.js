@@ -40,19 +40,62 @@ class ProductionManager {
             // Carregar marcas do IndexedDB
             if (typeof window.packingHouseDB.getAllBrands === 'function') {
                 this.marcas = await window.packingHouseDB.getAllBrands();
-                console.log(`📦 Produção: ${this.marcas.length} marcas carregadas`);
+                console.log(`📦 Produção: ${this.marcas.length} marcas carregadas do IndexedDB`);
+                
+                // Se não há marcas no IndexedDB, tentar migrar do localStorage
+                if (this.marcas.length === 0) {
+                    console.log('⚠️ Produção: Nenhuma marca no IndexedDB, tentando migração...');
+                    await this.migrateFromLocalStorage();
+                }
             } else {
-                console.warn('⚠️ Produção: getAllBrands não disponível, tentando localStorage');
+                console.warn('⚠️ Produção: getAllBrands não disponível, usando localStorage');
                 this.marcas = this.loadMarcasFromStorage();
             }
 
             // Carregar produções (mantém do localStorage por enquanto)
             this.producoes = this.loadProducoesFromStorage();
             console.log(`📊 Produção: ${this.producoes.length} produções carregadas`);
+            
+            // Verificar se há marcas disponíveis
+            if (this.marcas.length === 0) {
+                console.warn('⚠️ Produção: Nenhuma marca encontrada! O campo de autocomplete não funcionará.');
+                this.showMessage('Nenhuma marca cadastrada. Cadastre marcas nas Configurações.', 'warning');
+            }
         } catch (error) {
             console.error('❌ Produção: Erro ao carregar dados:', error);
             this.marcas = [];
             this.producoes = [];
+        }
+    }
+
+    async migrateFromLocalStorage() {
+        try {
+            const localStorageMarcas = JSON.parse(localStorage.getItem('marcas') || '[]');
+            if (localStorageMarcas.length > 0) {
+                console.log(`🔄 Produção: Migrando ${localStorageMarcas.length} marcas do localStorage...`);
+                
+                for (const marca of localStorageMarcas) {
+                    try {
+                        await window.packingHouseDB.addBrand({
+                            name: marca.nome || marca.name,
+                            peso: marca.peso
+                        });
+                        console.log(`✅ Marca migrada: ${marca.nome || marca.name}`);
+                    } catch (error) {
+                        console.error(`❌ Erro ao migrar marca ${marca.nome || marca.name}:`, error);
+                    }
+                }
+                
+                // Recarregar marcas do IndexedDB após migração
+                this.marcas = await window.packingHouseDB.getAllBrands();
+                console.log(`📦 Produção: ${this.marcas.length} marcas carregadas após migração`);
+                
+                // Limpar localStorage após migração bem-sucedida
+                localStorage.removeItem('marcas');
+                console.log('🧹 LocalStorage limpo após migração');
+            }
+        } catch (error) {
+            console.error('❌ Erro na migração do localStorage:', error);
         }
     }
 
@@ -144,13 +187,28 @@ class ProductionManager {
     }
 
     showMarcaSuggestions(query = '') {
+        console.log(`🔍 Produção: Buscando marcas com query: "${query}"`);
+        console.log(`📋 Produção: Marcas disponíveis:`, this.marcas);
+        
         const suggestionsContainer = document.getElementById('marcaSuggestions');
-        const filteredMarcas = this.marcas.filter(marca => 
-            (marca.name || marca.nome).toLowerCase().includes(query.toLowerCase())
-        );
+        
+        // Verificar se há marcas disponíveis
+        if (!this.marcas || this.marcas.length === 0) {
+            console.warn('⚠️ Produção: Nenhuma marca disponível para mostrar');
+            suggestionsContainer.innerHTML = '<div class="marca-suggestions-empty">Nenhuma marca cadastrada. <a href="configuracao.html" style="color: #667eea;">Cadastrar marcas</a></div>';
+            suggestionsContainer.style.display = 'block';
+            return;
+        }
+        
+        const filteredMarcas = this.marcas.filter(marca => {
+            const nome = marca.name || marca.nome || '';
+            return nome.toLowerCase().includes(query.toLowerCase());
+        });
+        
+        console.log(`🎯 Produção: ${filteredMarcas.length} marcas encontradas para query: "${query}"`);
 
         if (filteredMarcas.length === 0) {
-            suggestionsContainer.innerHTML = '<div class="marca-suggestions-empty">Nenhuma marca encontrada</div>';
+            suggestionsContainer.innerHTML = '<div class="marca-suggestions-empty">Nenhuma marca encontrada para esta busca</div>';
             suggestionsContainer.style.display = 'block';
             return;
         }
@@ -167,6 +225,7 @@ class ProductionManager {
         // Adicionar event listeners aos itens
         suggestionsContainer.querySelectorAll('.marca-suggestion-item').forEach(item => {
             item.addEventListener('click', () => {
+                console.log(`🖱️ Produção: Marca selecionada: ${item.dataset.marcaId}`);
                 this.selectMarca(item.dataset.marcaId);
             });
         });
@@ -178,14 +237,34 @@ class ProductionManager {
     }
 
     selectMarca(marcaId) {
-        const marca = this.marcas.find(m => m.id === marcaId);
-        if (!marca) return;
+        console.log(`🎯 Produção: Selecionando marca ID: ${marcaId}`);
+        console.log(`📋 Produção: Marcas disponíveis:`, this.marcas);
+        
+        const marca = this.marcas.find(m => m.id == marcaId); // Usar == para comparação flexível
+        if (!marca) {
+            console.error(`❌ Produção: Marca não encontrada com ID: ${marcaId}`);
+            this.showMessage('Marca não encontrada', 'error');
+            return;
+        }
+
+        console.log(`✅ Produção: Marca encontrada:`, marca);
 
         this.selectedMarcaId = marcaId;
         this.selectedMarca = marca;
         
-        document.getElementById('marcaProducao').value = marca.name || marca.nome;
+        const marcaInput = document.getElementById('marcaProducao');
+        const marcaNome = marca.name || marca.nome;
+        
+        console.log(`📝 Produção: Preenchendo input com: "${marcaNome}"`);
+        
+        marcaInput.value = marcaNome;
         this.hideMarcaSuggestions();
+        
+        // Disparar evento change para notificar outros sistemas
+        const event = new Event('change', { bubbles: true });
+        marcaInput.dispatchEvent(event);
+        
+        console.log(`✅ Produção: Marca selecionada com sucesso: ${marcaNome}`);
     }
 
     handleMarcaKeydown(e) {
@@ -422,6 +501,46 @@ class ProductionManager {
         return date.toLocaleDateString('pt-BR');
     }
 
+    // Função de depuração para diagnóstico
+    debugMarcaSystem() {
+        console.log('🔍 DEBUG: Sistema de Marcas');
+        console.log('📊 Marcas disponíveis:', this.marcas);
+        console.log('🎯 selectedMarcaId:', this.selectedMarcaId);
+        console.log('🏷️ selectedMarca:', this.selectedMarca);
+        console.log('🗄️ dbReady:', this.dbReady);
+        
+        const marcaInput = document.getElementById('marcaProducao');
+        const suggestionsContainer = document.getElementById('marcaSuggestions');
+        
+        console.log('📝 Input value:', marcaInput?.value);
+        console.log('👁️ Suggestions display:', suggestionsContainer?.style.display);
+        console.log('📋 Suggestions HTML:', suggestionsContainer?.innerHTML);
+        
+        // Testar IndexedDB diretamente
+        if (window.packingHouseDB && window.packingHouseDB.db) {
+            window.packingHouseDB.getAllBrands().then(brands => {
+                console.log('🗄️ IndexedDB brands:', brands);
+            }).catch(error => {
+                console.error('❌ Erro ao buscar marcas do IndexedDB:', error);
+            });
+        } else {
+            console.warn('⚠️ IndexedDB não disponível');
+        }
+        
+        // Verificar localStorage
+        const localStorageMarcas = JSON.parse(localStorage.getItem('marcas') || '[]');
+        console.log('💾 LocalStorage marcas:', localStorageMarcas);
+        
+        return {
+            marcas: this.marcas,
+            selectedMarcaId: this.selectedMarcaId,
+            selectedMarca: this.selectedMarca,
+            dbReady: this.dbReady,
+            inputValue: marcaInput?.value,
+            suggestionsDisplay: suggestionsContainer?.style.display
+        };
+    }
+
     showMessage(message, type = 'info') {
         // Criar elemento de mensagem
         const messageDiv = document.createElement('div');
@@ -500,5 +619,48 @@ document.addEventListener('DOMContentLoaded', () => {
     // Pequeno delay para garantir que o banco de dados esteja disponível
     setTimeout(() => {
         productionManager = new ProductionManager();
+        
+        // Adicionar funções globais para diagnóstico
+        window.debugProducao = () => {
+            if (productionManager) {
+                return productionManager.debugMarcaSystem();
+            } else {
+                console.error('❌ ProductionManager não inicializado');
+                return null;
+            }
+        };
+        
+        window.testarMarcas = () => {
+            if (productionManager) {
+                console.log('🧪 Testando sistema de marcas...');
+                productionManager.showMarcaSuggestions('');
+            } else {
+                console.error('❌ ProductionManager não inicializado');
+            }
+        };
+        
+        window.cadastrarMarcaTeste = async () => {
+            if (window.packingHouseDB && window.packingHouseDB.db) {
+                try {
+                    await window.packingHouseDB.addBrand({
+                        name: 'Marca Teste ' + Date.now(),
+                        peso: 10.5
+                    });
+                    console.log('✅ Marca de teste cadastrada');
+                    if (productionManager) {
+                        await productionManager.loadData();
+                    }
+                } catch (error) {
+                    console.error('❌ Erro ao cadastrar marca de teste:', error);
+                }
+            } else {
+                console.error('❌ Banco de dados não disponível');
+            }
+        };
+        
+        console.log('🔧 Funções de diagnóstico disponíveis:');
+        console.log('  - debugProducao() - Diagnóstico completo do sistema');
+        console.log('  - testarMarcas() - Testar autocomplete de marcas');
+        console.log('  - cadastrarMarcaTeste() - Cadastrar marca de teste');
     }, 500);
 });

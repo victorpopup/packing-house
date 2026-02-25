@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste - Produção</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/menu.css">
+    <link rel="stylesheet" href="css/producao.css">
+    <style>
+        .debug-panel {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            z-index: 20000;
+            max-width: 300px;
+        }
+        .debug-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            margin: 2px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+        .debug-btn:hover {
+            background: #5a6fd8;
+        }
+    </style>
+</head>
+<body>
+    <!-- Painel de Debug -->
+    <div class="debug-panel">
+        <h4>🔧 Painel de Debug</h4>
+        <button class="debug-btn" onclick="debugProducao()">Debug Sistema</button>
+        <button class="debug-btn" onclick="testarMarcas()">Testar Autocomplete</button>
+        <button class="debug-btn" onclick="cadastrarMarcaTeste()">Cadastrar Marca Teste</button>
+        <button class="debug-btn" onclick="window.location.reload()">Recarregar Página</button>
+        <div id="debugOutput" style="margin-top: 10px; max-height: 200px; overflow-y: auto;"></div>
+    </div>
+
+    <header>
+        <div class="logo-container">
+            <picture>
+                <source media="(max-width: 768px)" srcset="image/logo.mobile.svg">
+                <source media="(min-width: 769px)" srcset="image/logo.desktop.svg">
+                <img src="image/logo.desktop.svg" alt="Packing House" class="logo-img">
+            </picture>
+            <h1 class="logo-text">Packing House - Teste</h1>
+        </div>
+    </header>
+
+    <main class="page-content">
+        <div class="page-header">
+            <h2>Teste - Controle de Produção</h2>
+            <p>Teste o campo de marca e autocomplete</p>
+        </div>
+
+        <!-- Setor de Registro -->
+        <section class="sector-section">
+            <div class="sector-header">
+                <h3>Teste de Registro de Produção</h3>
+            </div>
+            
+            <!-- Registro de Produção -->
+            <div class="production-form-section">
+                <form id="formProducao" class="production-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="dataProducao">Data:</label>
+                            <input type="date" id="dataProducao" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="marcaProducao">Marca:</label>
+                            <div class="marca-input-container">
+                                <div class="marca-autocomplete-container">
+                                    <input type="text" id="marcaProducao" placeholder="Digite ou selecione uma marca..." required autocomplete="off">
+                                    <div class="marca-suggestions" id="marcaSuggestions"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="quantidadeCaixas">Quantidade de Caixas:</label>
+                            <input type="number" id="quantidadeCaixas" min="0" required>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Registrar Produção</button>
+                        <button type="reset" class="btn btn-secondary">Limpar</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Informações de Debug -->
+        <section class="sector-section">
+            <div class="sector-header">
+                <h3>Informações de Debug</h3>
+            </div>
+            <div style="color: #ffffff; font-family: monospace; font-size: 12px;">
+                <p><strong>Console:</strong> Abra o console do navegador para ver logs detalhados</p>
+                <p><strong>Funções disponíveis:</strong></p>
+                <ul>
+                    <li><code>debugProducao()</code> - Mostra informações completas do sistema</li>
+                    <li><code>testarMarcas()</code> - Força a exibição do autocomplete</li>
+                    <li><code>cadastrarMarcaTeste()</code> - Cadastra uma marca de teste</li>
+                </ul>
+                <p><strong>Passos para testar:</strong></p>
+                <ol>
+                    <li>1. Clique em "Cadastrar Marca Teste" para criar dados</li>
+                    <li>2. Clique no campo "Marca" para focar</li>
+                    <li>3. Digite algo para filtrar ou clique em "Testar Autocomplete"</li>
+                    <li>4. Clique em uma marca para selecionar</li>
+                    <li>5. Verifique se o campo foi preenchido</li>
+                </ol>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/database.js"></script>
+    <script src="js/production-brand-migration.js"></script>
+    <script src="js/producao.js"></script>
+    
+    <script>
+        // Capturar logs para exibir no painel
+        const originalLog = console.log;
+        const originalWarn = console.warn;
+        const originalError = console.error;
+        
+        function addToDebugOutput(message, type = 'log') {
+            const output = document.getElementById('debugOutput');
+            const div = document.createElement('div');
+            div.style.color = type === 'error' ? '#ff6b6b' : type === 'warn' ? '#ffd93d' : '#6bcf7f';
+            div.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            output.appendChild(div);
+            output.scrollTop = output.scrollHeight;
+            
+            // Manter apenas as últimas 20 mensagens
+            while (output.children.length > 20) {
+                output.removeChild(output.firstChild);
+            }
+        }
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            addToDebugOutput(args.join(' '), 'log');
+        };
+        
+        console.warn = function(...args) {
+            originalWarn.apply(console, args);
+            addToDebugOutput(args.join(' '), 'warn');
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            addToDebugOutput(args.join(' '), 'error');
+        };
+        
+        // Sobrescrever funções de diagnóstico para mostrar no painel
+        window.debugProducao = () => {
+            if (productionManager) {
+                const result = productionManager.debugMarcaSystem();
+                addToDebugOutput('DEBUG: ' + JSON.stringify(result, null, 2), 'log');
+            } else {
+                addToDebugOutput('❌ ProductionManager não inicializado', 'error');
+            }
+        };
+        
+        window.testarMarcas = () => {
+            if (productionManager) {
+                addToDebugOutput('🧪 Testando sistema de marcas...', 'log');
+                productionManager.showMarcaSuggestions('');
+            } else {
+                addToDebugOutput('❌ ProductionManager não inicializado', 'error');
+            }
+        };
+        
+        window.cadastrarMarcaTeste = async () => {
+            if (window.packingHouseDB && window.packingHouseDB.db) {
+                try {
+                    const nomeMarca = 'Marca Teste ' + Date.now();
+                    await window.packingHouseDB.addBrand({
+                        name: nomeMarca,
+                        peso: 10.5
+                    });
+                    addToDebugOutput(`✅ Marca de teste cadastrada: ${nomeMarca}`, 'log');
+                    if (productionManager) {
+                        await productionManager.loadData();
+                    }
+                } catch (error) {
+                    addToDebugOutput(`❌ Erro ao cadastrar marca de teste: ${error.message}`, 'error');
+                }
+            } else {
+                addToDebugOutput('❌ Banco de dados não disponível', 'error');
+            }
+        };
+    </script>
+</body>
+</html>
